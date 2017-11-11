@@ -17,22 +17,22 @@ getAPIData() {
 }
 
 cleanAPIData() { # gets rid of unneccesary api stuff, do i need this function?
-	cat topCryptosData.txt | sed 's/"\""/""/g' | sed 's/" "/""/g' > cleanTopCryptosData.txt # only do this once
+	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt # only do this once
 }
 
-topCryptos() {
+topCryptosData() {
 	getAPIData	
 	cleanAPIData
 
 	IFS=$"{"
 
-	for crypto in `cleanTopCryptosData.txt`
+	for crypto in `cat cleanTopCryptosData.txt`
 	do
-		echo $crypto | grep "symbol"
+		echo $crypto | grep "symbol" | awk -F: '{print $2}'
+		echo $crypto | grep "price_usd" | awk -F: '{print $2}'
+		echo $crypto | grep "price_btc" | awk -F: '{print $2}'
+		echo
 	done
-	#cat topCryptosData.txt | grep "symbol"
-	#cat topCryptosData.txt | grep "price_usd"
-	#cat topCryptosData.txt | grep "price_btc"
 }
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
@@ -45,7 +45,7 @@ do
 	read userInput
 
 	case $userInput in 
-		1) topCryptos
+		1) topCryptosData
 		;;
 		2) echo
 		;;
