@@ -17,13 +17,22 @@ getAPIData() {
 }
 
 cleanAPIData() { # gets rid of unneccesary api stuff, do i need this function?
-	echo
+	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g > cleanTopCryptosData.txt # only do this once
 }
 
 topCryptos() {
 	getAPIData	
-	#cleanAPIData
-	cat topCryptosData.txt | grep "symbol"
+	cleanAPIData
+
+	IFS=$"{"
+
+	for crypto in `cleanTopCryptosData.txt`
+	do
+		echo $crypto | grep "symbol"
+	done
+	#cat topCryptosData.txt | grep "symbol"
+	#cat topCryptosData.txt | grep "price_usd"
+	#cat topCryptosData.txt | grep "price_btc"
 }
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
