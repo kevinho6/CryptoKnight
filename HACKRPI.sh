@@ -9,18 +9,18 @@ displayMenu() {
     echo "3) Buy"
     echo "4) Sell"
     echo "5) Exit"
-    printf ": " # Doesn't allow you to use echo -n
+    printf ": " # Because echo -n is not working
 }
 
 
 #WHEN BUYING HAVE THE CURRENT MARKET PRICE AND KEEP IT FLUCTUATING
 
 getAPIData() {
-	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt # takes the top 10 cryptos and puts it into a file
+	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt
 }
 
-cleanAPIData() { # gets rid of unneccesary api stuff, do i need this function?
-	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt # only do this once
+cleanAPIData() { # Gets rid of unneccesary api stuff
+	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt
 }
 
 topCryptosData() {
@@ -58,8 +58,6 @@ sell() {
 		fi
 	done
 
-	#two while loops until it is a legit transaction
-
 	quantityToSell=0
 	while [ $quantityToSell -le 0 ]
 	do
@@ -71,8 +69,21 @@ sell() {
 		fi
 	done
 
-	#check if we have enough money to buy the quantity, the quantity has to be > 0
-	#market price times quantity, Ex. S,1209382903
+	index=$((($cryptoRankToSell - 1) * 17 + 7)) # Takes the line that has the price
+	sellMarketPrice=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
+	totalMarketPrice=$(echo "$quantityToSell * $sellMarketPrice"|bc)
+
+	index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
+	cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
+
+	echo
+	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
+
+	# check if we have enough money to buy the quantity
+
+	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> transactionHistory.txt
+	cat transactionHistory.txt
+
 	echo
 }
 
