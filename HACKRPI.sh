@@ -44,23 +44,32 @@ topCryptosData() {
 }
 
 sell() {
+	topCryptosData # Function Call
 
-	topCryptosData
+	cryptoRankToSell=0
 
-	printf "Input the rank of the cryptocurrency that you want to sell: "
-	read cryptoNumberToSell
+	while [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ]
+	do
+		printf "Input the rank of the cryptocurrency that you want to sell: "
+		read cryptoRankToSell
+		if [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ]
+		then
+			echo "Invalid Rank"
+		fi
+	done
 
-	if [ `cat cleanTopCryptosData.txt | grep "rank:$cryptoNumberToSell" | wc -l` -eq 1 ]
-	then
-		echo "VALID"
-	else
-		echo "INVALID"
-	fi
-	
 	#two while loops until it is a legit transaction
 
-	printf "Input the quantity that you want to sell: "
-	read quantityToSell
+	quantityToSell=0
+	while [ $quantityToSell -le 0 ]
+	do
+		printf "Input the quantity that you want to sell: "
+		read quantityToSell
+		if [ $quantityToSell -le 0 ]
+		then
+			echo "Invalid quantity"
+		fi
+	done
 
 	#check if we have enough money to buy the quantity, the quantity has to be > 0
 	#market price times quantity, Ex. S,1209382903
