@@ -25,51 +25,50 @@ struct day_type days[MAX_DAYS];
 
 int main(int argc, char *argv[])
 {
-  FILE *fp;
+	FILE *fp;
   
-  sprintf(cmd,
-    "wget -qO- https://coinmarketcap.com/currencies/bitcoin/historical-data/");
+	sprintf(cmd,"wget -qO- https://coinmarketcap.com/currencies/bitcoin/historical-data/");
+	
+	if((fp = popen(cmd, "r")) != NULL)
+	{
+		state = 0;
 
-    if((fp = popen(cmd, "r")) != NULL)
-    {
-      state = 0;
+		while (!feof(fp))
+		{
+		if (fgets(buffer,sizeof(buffer) - 1, fp) != NULL)
+		{
+			switch (state)
+			{
+			case 0:
+			if (strstr(buffer, "<div class=table-responsive>") != NULL)
+			{
+				i = 0;
+				state = 1;
+			}
+			break;
 
-      while (!feof(fp))
-      {
-        if (fgets(buffer,sizeof(buffer) - 1, fp) != NULL)
-        {
-          switch (state)
-          {
-            case 0:
-            if (strstr(buffer, "<div class=table-responsive>") != NULL)
-            {
-              i = 0;
-              state = 1;
-            }
-            break;
+			case 1:
+				if (strstr(buffer,"<td class=\"text-right\">") != NULL)
+				{
+				if ((ptr = strstr(buffer, "<-left\">")) != NULL)
+				{
+					ptr +=3;
+					indx = 0;
 
-            case 1:
-              if (strstr(buffer,"<td class=\"text-right\">") != NULL)
-              {
-                if ((ptr = strstr(buffer, "<-left\">")) != NULL)
-                {
-                  ptr +=3;
-                  indx = 0;
-
-                  while (*ptr != '<')
-                  {
-                    days[i].day[indx] = *ptr;
-                    indx++;
-                    ptr++;
-                  }
-                  state = 2;
-                }
-                printf("%s", *ptr);
-              }
-            break;
-          }
-        }
-      }
-    }
+					while (*ptr != '<')
+					{
+					days[i].day[indx] = *ptr;
+					indx++;
+					ptr++;
+					}
+					state = 2;
+				}
+				printf("%s", *ptr);
+				}
+			break;
+			}
+		}
+		}
+	}
 	pclose(fp);
 }
