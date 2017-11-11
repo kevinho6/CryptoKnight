@@ -17,7 +17,7 @@ getAPIData() {
 }
 
 cleanAPIData() { # gets rid of unneccesary api stuff, do i need this function?
-	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g > cleanTopCryptosData.txt # only do this once
+	cat topCryptosData.txt | sed 's/"\""/""/g' | sed 's/" "/""/g' > cleanTopCryptosData.txt # only do this once
 }
 
 topCryptos() {
