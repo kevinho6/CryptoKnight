@@ -1,12 +1,15 @@
+/bin/echo
+
 clear
 
 displayMenu() {
+	echo "Menu"
     echo "1) View the Top 10 Cryptocurrencies"
     echo "2) View Your Portfolio"
     echo "3) Buy"
     echo "4) Sell"
     echo "5) Exit"
-    echo ": " # Doesn't allow you to use echo -n
+    printf ": " # Doesn't allow you to use echo -n
 }
 
 
@@ -28,16 +31,46 @@ topCryptosData() {
 
 	for crypto in `cat cleanTopCryptosData.txt`
 	do
-		echo $crypto | grep "symbol" | awk -F: '{print $2}'
-		echo $crypto | grep "price_usd" | awk -F: '{print $2}'
-		echo $crypto | grep "price_btc" | awk -F: '{print $2}'
+		echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'
+		echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'
+		echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'
+		echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'
+		echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'
+		echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'
+		echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'
+		echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}'
 		echo
 	done
 }
 
+sell() {
+
+	topCryptosData
+
+	printf "Input the rank of the cryptocurrency that you want to sell: "
+	read cryptoNumberToSell
+
+	if [ `cat cleanTopCryptosData.txt | grep "rank:$cryptoNumberToSell" | wc -l` -eq 1 ]
+	then
+		echo "VALID"
+	else
+		echo "INVALID"
+	fi
+	
+	#two while loops until it is a legit transaction
+
+	printf "Input the quantity that you want to sell: "
+	read quantityToSell
+
+	#check if we have enough money to buy the quantity, the quantity has to be > 0
+	#market price times quantity, Ex. S,1209382903
+	echo
+}
+
 echo "Welcome to the Cryptocurrency Trading Simulator"
-echo "Please input your starting amount: " # if starting amount is less than 0 then don't let this happen
+printf "Please input your starting amount: " # if starting amount is less than 0 then don't let this happen
 read startingAmount
+echo
 
 while true
 do
@@ -51,7 +84,7 @@ do
 		;;
 		3) echo
 		;;
-		4) echo
+		4) sell
 		;;
 		5) echo "Goodbye!"
 			break
