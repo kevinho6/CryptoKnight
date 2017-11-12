@@ -216,7 +216,7 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$username.holding"`
+		holdings_file=`echo "$Username.holding"`
 		echo "$currency,$difference" >> $holdings_file 
 
 	else
