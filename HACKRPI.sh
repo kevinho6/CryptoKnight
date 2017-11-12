@@ -438,7 +438,6 @@ messaging_setup()
 	send_to=`echo "$user_phone@$user_carrier"`
 }
 
-<<<<<<< HEAD
 leader_board()
 {
 	rm -f all_user_holding
@@ -476,8 +475,6 @@ leader_board()
 
 # everytime you change a buy transaction, then call view_profile again
 
-=======
->>>>>>> 629f738f78913960ea0586507a5f343052a9676e
 echo "Welcome to the Cryptocurrency Trading Simulator"
 echo
 
