@@ -219,9 +219,9 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$username.holdings"`
-		echo "$currency,$quantity,$total_value,$difference" >> $holdings_file 
-
+		holdings_file=`echo "$Username.holdings"`
+		echo $holdings_file
+		echo "$currency,$volume,$total_value,$difference" > $holdings_file 
 	else
     	echo "Error: No File Specified"
     	exit 64
