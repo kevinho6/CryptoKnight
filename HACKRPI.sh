@@ -1,5 +1,3 @@
-/bin/echo
-
 clear
 
 displayMenu() {
@@ -71,7 +69,7 @@ sell() {
 
 	index=$((($cryptoRankToSell - 1) * 17 + 7)) # Takes the line that has the price
 	sellMarketPrice=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
-	totalMarketPrice=$(echo "$quantityToSell * $sellMarketPrice"|bc)
+	totalMarketPrice=$(echo "$quantityToSell * $sellMarketPrice" | bc)
 
 	index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 	cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
@@ -84,27 +82,36 @@ sell() {
 	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> transactionHistory.txt
 	cat transactionHistory.txt
 
+
+
+	portfolioAmount=$(echo "$portfolioAmount - $totalMarketPrice" | bc)
+
+
+
 	echo
 }
 
+startingAmount=100000
+portfolioAmount=$startingAmount
 echo "Welcome to the Cryptocurrency Trading Simulator"
-printf "Please input your starting amount: " # if starting amount is less than 0 then don't let this happen
-read startingAmount
+echo "Your portfolio starting amount is \$$startingAmount"
 echo
 
 while true
 do
-	displayMenu
+	echo "Your portfolio value is \$$portfolioAmount"
+	echo
+	displayMenu # Function Call
 	read userInput
 
 	case $userInput in 
-		1) topCryptosData
+		1) topCryptosData # Function Call
 		;;
 		2) echo
 		;;
 		3) echo
 		;;
-		4) sell
+		4) sell # Function Call
 		;;
 		5) echo "Goodbye!"
 			break
