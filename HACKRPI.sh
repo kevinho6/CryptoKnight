@@ -19,6 +19,23 @@ getAPIData() {
 
 cleanAPIData() { # Gets rid of unneccesary api stuff
 	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt
+
+
+	# Clean data for Amy
+	index=0
+	printf "" > amysCleanFile.txt
+	while [ $index -lt 10 ]
+	do
+		newIndex=$(($index * 17 + 5))
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> amysCleanFile.txt
+		newIndex=$(($index * 17 + 7))
+		printf ',' >> amysCleanFile.txt
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> amysCleanFile.txt
+		cat amysCleanFile.txt | echo >> amysCleanFile.txt
+		index=$((index+1))
+	done
+
+
 }
 
 topCryptosData() {
@@ -92,19 +109,16 @@ buy() {
 # THIS IS A TEST, kind of like a ledger
 # if it is not there then 
 
-if [ `cat portfolioHoldings.txt | wc -l` -ge 1 ]
-then
+#if [ `cat portfolioHoldings.txt | wc -l` -ge 1 ]
+#then
 	#use a sed to replace the old value with the new incremented value
 	# doesn't make sense because if you have the same numbers then they will also be replaced
-else
-	portfolioHoldings.txt >> echo "$cryptoTicker,$quantityToBuy"
-fi
+#else
+#	portfolioHoldings.txt >> echo "$cryptoTicker,$quantityToBuy"
+#fi
 
 # STARTOFF WITH A THINGY WITH BALANCE
 # what happens when a currency overtakes another on the to 10
-
-
-cat portfolioHoldings
 
 echo
 
@@ -184,6 +198,112 @@ sell() {
 	echo
 }
 
+
+
+
+
+
+
+
+
+
+
+sum_trans()
+{	
+	if [ $# -ge 1 ]
+    then
+		file=$1
+
+		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
+
+		total_value=0
+		for currency in `cat currency_names`
+		do
+			cat $file | grep $currency > one_currency
+
+			sum=0
+			for trans in `cat one_currency`
+			do
+				type_tran=`echo $trans | awk -F, '{printf "%s",$1}'`
+				volume=`echo $trans | awk -F, '{printf "%d",$4}'`
+				current_price=`cat amysCleanFile.txt | grep $currency | awk -F, '{printf "%f",$2}'`
+
+				if [ $type_tran = "S" ]
+				then
+					sum=$(echo "$sum - $volume" | bc)
+				else
+					sum=$(echo "$sum + $volume" | bc)
+				fi	
+			done
+			
+			market_value=$(echo "$sum * $current_price" | bc)
+			total_value=$(echo "$total_value + $market_value" | bc)
+			printf "%-16s %-20s %-20s\n" "$volume" "$currency" "$market_value"
+		done
+
+		echo "-------------------------------"
+		echo "Value: $total_value"
+		echo "-------------------------------"
+
+		difference=$(echo "$total_value - $startingAmount" | bc) # PARSE ERROR, just this line
+		difference=$(echo "$difference * 100" | bc) #
+
+		change=$(echo "$difference / $startingAmount" | bc) #
+		echo "Change: $change%"
+		echo "-------------------------------"
+
+	else
+    	echo "Error: No File Specified"
+    	exit 64
+	fi	
+}
+
+# main function
+view_profile()
+{   
+	if [ $# -ge 1 ]
+    then
+        echo "------------------------"
+    	echo "|       Profile        |"
+    	echo "------------------------"
+    	echo "Username: $username"
+    	file=`printf "$username"".tran"`
+    	echo "Quantity         Holdings             Market Value"
+	    echo "--------         --------             ------------"
+
+    	if [ -f "$file" ]
+    	then
+    		sum_trans $file
+     	else
+     		touch -f $file
+     		echo "-------------------------------"
+		    echo "Value: $startAmount"
+		    echo "-------------------------------"
+		    echo "Change: 0%"
+		    echo "-------------------------------"
+     		echo "WARNING: TRANSACTION FILE IS EMPTY"
+    	fi
+    else
+    	echo "Error: No Username Specified"
+    	exit 64
+    fi
+
+    rm -f currency_names
+    rm -f one_currency
+    rm -f temp
+}
+
+
+
+
+
+
+
+# everytime you change a buy transaction, then call view_profile again
+
+
+
+
 startingAmount=100000
 availableCash=$startingAmount
 echo "Welcome to the Cryptocurrency Trading Simulator"
@@ -192,6 +312,7 @@ echo
 
 while true
 do
+	echo
 	echo "Your Available Cash is \$$availableCash" # WANT TO MAKE THIS CURRENT PORTFOLIO VALUE
 	echo
 	displayMenu # Function Call
@@ -200,7 +321,10 @@ do
 	case $userInput in 
 		1) topCryptosData # Function Call
 		;;
-		2) echo
+		2)	printf "Enter your username: "
+			read username
+			echo
+			view_profile $username # Function Call
 		;;
 		3) buy # Function Call
 		;;
