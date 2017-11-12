@@ -190,9 +190,9 @@ sum_trans()
 
 				if [ $type_tran = "S" ]
 				then
-					sum=$(echo "$sum - $volume" | bc)
+					sum=$(($sum-$volume))
 				else
-					sum=$(echo "$sum + $volume" | bc)
+					sum=$(($sum+$volume))
 				fi	
 			done
 			
@@ -213,6 +213,7 @@ sum_trans()
 		difference=$(echo "$difference * 100" | bc) 
 
 		change=$(echo "$difference / $startingAmount" | bc) 
+		#change=echo $(( 100 * 1 / 3 )) | sed 's/..$/.&/'
 		echo "Change: $change%"
 		echo "-------------------------------"
 
