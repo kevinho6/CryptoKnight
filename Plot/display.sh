@@ -54,10 +54,13 @@ parseJSON() {
 
 singleLine() {
 	gnuplot << EOF
-	set term x11 persist
-	set ylabel "$1 Price ($)"
-	set xlabel "Day"
-	set title "$1 History"
+	set term x11 persist background rgb 'black'
+	set ylabel "$1 Price ($)" tc rgb 'white'
+	set xlabel "Day" tc rgb 'white'
+	set title "$1 History" tc rgb 'white'
+	set autoscale
+	set grid lc rgb 'white'
+	set border lc rgb 'white'
 	set style line 1 lt 2 lw 3
 	plot 'xy$1.dat' using 1:2 notitle w l
 	EOF
@@ -111,10 +114,12 @@ display() {
 			singleLine $fileName
 			;;
 		11) gnuplot << EOF
-			set ylabel "Price ($)
-			set xLabel "Day"
-			set title "History"
-			
+			set term x11 persist background 'black'
+			set ylabel "Price ($) tc rgb 'white'
+			set xLabel "Day" tc rgb 'white'
+			set title "History" tc rgb 'white
+			set grid lc rgb 'white'
+			set border lc rgb 'white'
 			set key left bottom
 		
 			set autoscale
