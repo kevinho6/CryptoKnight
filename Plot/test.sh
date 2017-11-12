@@ -19,7 +19,7 @@ do
 done
 
 gnuplot << EOF
-set term png 
+set term x11 
 set output "plot.png"
 set ylabel "Market Price ($)"
 set xlabel "Day"
