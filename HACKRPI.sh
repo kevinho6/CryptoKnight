@@ -144,8 +144,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-#
-		if [ `cat $Username.tran | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.tran | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat $kevinsFile.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -177,6 +176,9 @@ sum_trans()
 		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
 
 		total_value=0
+
+		printf "" > kevinsFile.txt
+
 		for currency in `cat currency_names`
 		do
 			cat $file | grep $currency > one_currency
@@ -200,6 +202,9 @@ sum_trans()
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
+			echo "$currency,$sum" >> kevinsFile.txt
+
+
 		done
 
 		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
@@ -219,9 +224,9 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$username.holdings"`
-		echo "$currency,$quantity,$total_value,$difference" > $holdings_file 
-
+		#holdings_file=`echo "$Username.holdings"`
+		#echo $holdings_file
+		#echo "$currency,$volume,$total_value,$difference" > $holdings_file
 	else
     	echo "Error: No File Specified"
     	exit 64
