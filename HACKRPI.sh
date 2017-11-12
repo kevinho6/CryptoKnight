@@ -1,5 +1,7 @@
 clear
 
+startingAmount=100000
+
 displayMenu() {
 	echo "Menu"
     echo "1) View the Top 10 Cryptocurrencies"
@@ -20,7 +22,6 @@ getAPIData() {
 cleanAPIData() { # Gets rid of unneccesary api stuff
 	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt
 
-
 	# Clean data for Amy
 	index=0
 	printf "" > amysCleanFile.txt
@@ -34,8 +35,6 @@ cleanAPIData() { # Gets rid of unneccesary api stuff
 		cat amysCleanFile.txt | echo >> amysCleanFile.txt
 		index=$((index+1))
 	done
-
-
 }
 
 topCryptosData() {
@@ -74,6 +73,7 @@ buy() {
 	done
 
 	quantityToBuy=0
+	availableCash=`cat $Username.portValue`
 	while [ $quantityToBuy -le 0 ]
 	do
 		printf "Input the quantity that you want to buy: "
@@ -99,28 +99,14 @@ buy() {
 			availableCash=$(echo "$availableCash - $totalMarketPrice" | bc)
 		fi
 	done
+	echo $availableCash > $Username.portValue
 
 	echo
 	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice,$availableCash" >> $transaction_file 
-	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
-
-
-# THIS IS A TEST, kind of like a ledger
-# if it is not there then 
-
-#if [ `cat portfolioHoldings.txt | wc -l` -ge 1 ]
-#then
-	#use a sed to replace the old value with the new incremented value
-	# doesn't make sense because if you have the same numbers then they will also be replaced
-#else
-#	portfolioHoldings.txt >> echo "$cryptoTicker,$quantityToBuy"
-#fi
-
-# STARTOFF WITH A THINGY WITH BALANCE
-# what happens when a currency overtakes another on the to 10
-
-echo
+	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
+	view_profile $Username
+#	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
+	echo
 
 }
 
@@ -140,6 +126,7 @@ sell() {
 	done
 
 	quantityToSell=0
+	availableCash=`cat $Username.portValue`
 	while [ $quantityToSell -le 0 ]
 	do
 		printf "Input the quantity that you want to sell: "
@@ -156,12 +143,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-
-
-
-
-
-		if [ `cat portfolioHoldings.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat portfolioHoldings.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat $Username.tran | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.tran | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -169,46 +151,25 @@ sell() {
 		else
 			availableCash=$(echo "$availableCash + $totalMarketPrice" | bc)
 		fi
-
-
-
-
-
 	done
+	echo $availableCash > $Username.portValue
 
 #GOTTA UPDATE THE FILE EVERYTIME YOUR SELL SOMETHING
-
 
 	echo
 	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
 
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice,$availableCash" >> $transaction_file
-	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
-
-
-
-
-
-
-
-
-
-	# check if we have enough coins to sell the quantity
+	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
+#	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
+	view_profile $Username
 	echo
 }
 
-
-
-
-
-
-
-
-
-
-
 sum_trans()
-{	
+{
+	getAPIData	
+	cleanAPIData
+
 	if [ $# -ge 1 ]
     then
 		file=$1
@@ -216,7 +177,6 @@ sum_trans()
 		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
 
 		total_value=0
-		printf "" > portfolioHoldings.txt
 		for currency in `cat currency_names`
 		do
 			cat $file | grep $currency > one_currency
@@ -238,12 +198,15 @@ sum_trans()
 			
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
-			printf "%-16s %-20s %-20s\n" "$sum" "$currency" "$market_value"
+			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
 		done
 
+		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
+
 		echo "-------------------------------"
-		echo "Value: $total_value"
+		printf "Value: \$"
+		printf "%0.2f\n" $total_value
 		echo "-------------------------------"
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
@@ -274,7 +237,6 @@ view_profile()
     	file=`printf "$Username"".tran"`
     	echo "Quantity         Holdings             Market Value"
 	    echo "--------         --------             ------------"
-
     	if [ -f "$file" ]
     	then
     		sum_trans $file
@@ -342,6 +304,7 @@ login()
 				printf "%s," "$phone" >> users.txt
 				echo $carrier >> users.txt
 
+				printf "$startingAmount" > "$Username"".portValue"
 			else
 				exit
 			fi
@@ -392,16 +355,9 @@ messaging_setup()
 	send_to=`echo "$user_phone@$user_carrier"`
 }
 
-
 # everytime you change a buy transaction, then call view_profile again
 
-
-
-
-startingAmount=100000
-availableCash=$startingAmount
 echo "Welcome to the Cryptocurrency Trading Simulator"
-echo "Your portfolio starting amount is \$$startingAmount"
 echo
 
 userInput=1
@@ -411,15 +367,15 @@ then
 
 	# login setup
 	transaction_file=`echo $Username.tran`
-	messaging_setup
-
+	# messaging_setup
 fi
 
 while true
 do
 
 	echo
-	echo "Your Available Cash is \$$availableCash" # WANT TO MAKE THIS CURRENT PORTFOLIO VALUE
+	printf "Your Current Free Cash is $"
+	cat $Username.portValue
 	echo
 	displayMenu # Function Call
 
@@ -434,7 +390,8 @@ do
 		;;
 		4) sell # Function Call
 		;;
-		5) echo "Goodbye!"
+		5) echo 
+			echo "Goodbye!"
 			break
 		;;
 		*) echo "That is not a valid input!"
