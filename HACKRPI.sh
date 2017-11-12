@@ -102,8 +102,8 @@ buy() {
 
 	echo
 	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
-
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice,$availableCash" >> transactionHistory.txt
+	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice,$availableCash" >> $transaction_file 
+	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
 
 
 # THIS IS A TEST, kind of like a ledger
@@ -182,7 +182,8 @@ sell() {
 	echo
 	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
 
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice,$availableCash" >> transactionHistory.txt
+	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice,$availableCash" >> $transaction_file
+	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
 
 
 
@@ -269,8 +270,8 @@ view_profile()
         echo "------------------------"
     	echo "|       Profile        |"
     	echo "------------------------"
-    	echo "Username: $username"
-    	file=`printf "$username"".tran"`
+    	echo "Username: $Username"
+    	file=`printf "$Username"".tran"`
     	echo "Quantity         Holdings             Market Value"
 	    echo "--------         --------             ------------"
 
@@ -296,10 +297,100 @@ view_profile()
     rm -f temp
 }
 
+login()
+{	if [ -f users.txt ]
+	then
+		echo "Enter Username: "
+		read Username
 
+		is_user=`cat users.txt | awk -F, '{printf "%s\n",$1}' | grep -w $Username | wc -l`
 
+		if [ $is_user -eq 0 ]
+		then
+			echo "Username does not exist"
+			echo "Would you like to sign up? (yes/no)"
+			read is_signup
+			num_users=`cat users.txt | wc -l`
+			is_match=true
 
+			if [ $is_signup = "yes" ]
+			then
+				while [ $is_match = true ]
+				do
+					echo "Enter Password: "
+					read Password
+					echo "Confirm Password: "
+					read ConfirmPassword
 
+					if [ $Password != $ConfirmPassword ]
+					then
+						echo "Mismatch. Try again."
+					else
+						is_match=false
+					fi	
+				done
+
+				echo "Enter Phone Number: "
+				read phone
+
+				echo "Enter Phone Carrier: "
+				echo "(T: Tmobile, S: Sprint, V: Verison, A:AT&T)"
+				read carrier
+
+				printf "%s," "$Username" >> users.txt
+				printf "%s," "$Password" >> users.txt
+				printf "%s," "$phone" >> users.txt
+				echo $carrier >> users.txt
+
+			else
+				exit
+			fi
+		else
+			count=0
+			is_match=false
+
+			while [ $count -le 4 ] && [ $is_match = false ]
+			do
+				echo "Enter Password: "
+				read Password
+
+				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
+
+				if [ $is_password -eq 0 ]
+				then
+					echo "Incorrect Password"
+				else
+					echo "Welcome $Username!"
+					is_match=true
+				fi
+
+				count=$((count+1))
+			done
+		fi
+	else
+		echo "Error: File Not Found: users.txt"
+	fi
+}
+
+messaging_setup()
+{
+	user_phone=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$3}'`
+	user_carrier=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$4}'`
+
+	case $user_carrier in
+		"T") user_carrier="tmomail.net"
+		;;
+		"S") user_carrier="messaging.sprintpcs.com"
+		;;
+		"V") user_carrier="vtext.com"
+		;;
+		"A") user_carrier="txt.att.net"
+		;;
+		*) echo "Sorry, we do not recognize your carrier"
+	esac 
+
+	send_to=`echo "$user_phone@$user_carrier"`
+}
 
 
 # everytime you change a buy transaction, then call view_profile again
@@ -313,21 +404,31 @@ echo "Welcome to the Cryptocurrency Trading Simulator"
 echo "Your portfolio starting amount is \$$startingAmount"
 echo
 
+userInput=1
+if [ $userInput -ne 5 ]
+then
+	login
+
+	# login setup
+	transaction_file=`echo $Username.tran`
+	messaging_setup
+
+fi
+
 while true
 do
+
 	echo
 	echo "Your Available Cash is \$$availableCash" # WANT TO MAKE THIS CURRENT PORTFOLIO VALUE
 	echo
 	displayMenu # Function Call
+
 	read userInput
 
 	case $userInput in 
 		1) topCryptosData # Function Call
 		;;
-		2)	printf "Enter your username: "
-			read username
-			echo
-			view_profile $username # Function Call
+		2) view_profile $Username # Function Call
 		;;
 		3) buy # Function Call
 		;;
