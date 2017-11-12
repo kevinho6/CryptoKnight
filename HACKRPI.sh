@@ -87,7 +87,7 @@ buy() {
 		index=$((($cryptoRankToBuy - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ $(echo "$availableCash <= $totalMarketPrice" | bc) -eq 1 ]
+		if [ $(echo "$availableCash - $totalMarketPrice" | bc) -gt 0 ]
 		then
 			echo "You don't have enough cash available to buy $quantityToBuy $cryptoTicker"
 			echo
@@ -140,7 +140,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ `cat $kevinsFile.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat $Username.stocks | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -198,11 +198,11 @@ sum_trans()
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> kevinsFile.txt
+			printf "$currency"",""$sum\n" >> $Username.stocks
 
 		done
 
-		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
+		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
 
 		echo "-------------------------------"
 		printf "USD: $"
