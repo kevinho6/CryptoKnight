@@ -4,11 +4,11 @@ cat history.json | jq .bpi > cleanerHist.txt
 
 cat cleanerHist.txt | sed s/'{'/''/g | sed s/','/''/g | sed s/'}'/''/g | sed s/'\"'/''/g | sed s/':'/''/g | sed s/'-'/''/g | sed s/'2017'/''/g | sed '/^\s*$/d' > cleanedHistory.dat
 
-#if [ -f history.dat ]
-#then
-#	echo "Deleting old history"
-#	rm history.dat
-#fi
+if [ -f history.dat ]
+then
+	echo "Deleting old history"
+	rm history.dat
+fi
 
 lines=0
 
@@ -19,7 +19,7 @@ do
 done
 
 gnuplot << EOF
-set term x11 
+set term x11 persist 
 set output "plot.png"
 set ylabel "Market Price ($)"
 set xlabel "Day"
