@@ -211,14 +211,12 @@ sum_trans()
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc) 
-
-		change=$(echo "$difference / $startingAmount" | bc) 
-		#change=echo $(( 100 * 1 / 3 )) | sed 's/..$/.&/'
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
 		echo "Change: $change%"
 		echo "-------------------------------"
 
 		holdings_file=`echo "$username.holding"`
-		echo "$currency,$difference" >> $holdings_file 
+		echo "$total_value,$difference" >> $holdings_file 
 
 	else
     	echo "Error: No File Specified"
