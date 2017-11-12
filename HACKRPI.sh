@@ -12,10 +12,6 @@ displayMenu() {
     printf ": " # Because echo -n is not working
 }
 
-
-#WHEN BUYING HAVE THE CURRENT MARKET PRICE AND KEEP IT FLUCTUATING
-
-
 getAPIData() {
 	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt
 }
@@ -204,7 +200,6 @@ sum_trans()
 
 			echo "$currency,$sum" >> kevinsFile.txt
 
-
 		done
 
 		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
@@ -224,9 +219,8 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		#holdings_file=`echo "$Username.holdings"`
-		#echo $holdings_file
-		#echo "$currency,$volume,$total_value,$difference" > $holdings_file
+		holdings_file=`echo "$Username.holdings"`
+		echo "$total_value,$difference" > $holdings_file 
 	else
     	echo "Error: No File Specified"
     	exit 64
@@ -251,11 +245,12 @@ view_profile()
      	else
      		touch -f $file
      		echo "-------------------------------"
-		    echo "Value: $startAmount"
+		    echo "Value: $startingAmount"
 		    echo "-------------------------------"
 		    echo "Change: 0%"
 		    echo "-------------------------------"
      		echo "WARNING: TRANSACTION FILE IS EMPTY"
+
     	fi
     else
     	echo "Error: No Username Specified"
@@ -363,8 +358,6 @@ messaging_setup()
 
 	send_to=`echo "$user_phone@$user_carrier"`
 }
-
-# everytime you change a buy transaction, then call view_profile again
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
 echo
