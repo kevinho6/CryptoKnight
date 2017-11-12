@@ -90,6 +90,3 @@ view_profile()
     rm -f temp
 }
 
-startAmount=100000
-
-view_profile amy
