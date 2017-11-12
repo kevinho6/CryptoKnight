@@ -21,17 +21,17 @@ getTopTen() {
 		echo $line | grep "symbol" | awk -F: '{print $2}' >> topTen.txt
 	done
 }
-#grabHistory() {
-#	getTopTen
-#	
-#	while read symbol
-#	do
-#		echo $symbol $symbol $symbol
-		#echo "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG"
+grabHistory() {
+	getTopTen
+	
+	cat topTen.txt | while read symbol
+	do
+		echo $symbol $symbol $symbol
+		echo "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG"
 		
-#		wget -qO- "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG" > $symbol.txt
-#	done <(cat topTen.txt)
-#}
+		wget -qO- "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG" > $symbol.txt
+	done
+}
  
 
 parseJSON() {
@@ -54,10 +54,13 @@ parseJSON() {
 
 singleLine() {
 	gnuplot << EOF
-	set term x11 persist
-	set ylabel "$1 Price ($)"
-	set xlabel "Day"
-	set title "$1 History"
+	set term x11 persist background rgb 'black'
+	set ylabel "$1 Price ($)" tc rgb 'white'
+	set xlabel "Day" tc rgb 'white'
+	set title "$1 History" tc rgb 'white'
+	set autoscale
+	set grid lc rgb 'white'
+	set border lc rgb 'white'
 	set style line 1 lt 2 lw 3
 	plot 'xy$1.dat' using 1:2 notitle w l
 	EOF
@@ -111,10 +114,12 @@ display() {
 			singleLine $fileName
 			;;
 		11) gnuplot << EOF
-			set ylabel "Price ($)
-			set xLabel "Day"
-			set title "History"
-			
+			set term x11 persist background 'black'
+			set ylabel "Price ($) tc rgb 'white'
+			set xLabel "Day" tc rgb 'white'
+			set title "History" tc rgb 'white
+			set grid lc rgb 'white'
+			set border lc rgb 'white'
 			set key left bottom
 		
 			set autoscale
@@ -142,6 +147,9 @@ display() {
 			"xy$rankCoin[8].dat" u 1:2 lp ls 9 t "$rankCoin[8]" w l,
 			"xy$rankCoin[9].dat" u 1:2 lp ls 10 t "$rankCoin[9]" w l
 
+			;;
+		12) echo "Update Top Ten History"
+			grabHistory
 			;;
 		*) echo "Invalid Input"
 	esac
