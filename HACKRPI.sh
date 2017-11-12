@@ -103,7 +103,7 @@ buy() {
 	echo
 	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
 
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> transactionHistory.txt
+	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice,$availableCash" >> transactionHistory.txt
 
 
 # THIS IS A TEST, kind of like a ledger
@@ -161,10 +161,7 @@ sell() {
 
 
 
-
-# should have a portfolioHoldings.txt and is overwritten everytime
-
-		if [ $(echo "$availableCash <= $totalMarketPrice" | bc) -eq 1 ]
+		if [ `cat portfolioHoldings.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat portfolioHoldings.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -179,12 +176,13 @@ sell() {
 
 	done
 
+#GOTTA UPDATE THE FILE EVERYTIME YOUR SELL SOMETHING
 
 
 	echo
 	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
 
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> transactionHistory.txt
+	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice,$availableCash" >> transactionHistory.txt
 
 
 
@@ -217,6 +215,7 @@ sum_trans()
 		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
 
 		total_value=0
+		printf "" > portfolioHoldings.txt
 		for currency in `cat currency_names`
 		do
 			cat $file | grep $currency > one_currency
@@ -238,7 +237,10 @@ sum_trans()
 			
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
-			printf "%-16s %-20s %-20s\n" "$volume" "$currency" "$market_value"
+			printf "%-16s %-20s %-20s\n" "$sum" "$currency" "$market_value"
+
+			echo "$currency,$sum" >> portfolioHoldings.txt # add to the portfolioHoldings.txt file
+
 		done
 
 		echo "-------------------------------"
