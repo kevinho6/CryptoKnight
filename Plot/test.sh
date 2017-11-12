@@ -19,7 +19,8 @@ do
 done
 
 gnuplot << EOF
-set terminal postscript
+set term png 
+set output "plot.png"
 set ylabel "Market Price ($)"
 set xlabel "Day"
 set title "Market Price History"
