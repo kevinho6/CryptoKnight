@@ -116,7 +116,9 @@ display() {
 			set title "History"
 			
 			set key left bottom
-			
+		
+			set autoscale
+
 			set style line 1 lt 1 lc rgb "#A00000" lw 2 pt 7 ps 1.5
 			set style line 2 lt 1 lc rgb "#00A000" lw 2 pt 11 ps 1.5
 			set style line 3 lt 1 lc rgb "#5060D0" lw 2 pt 9 ps 1.5
@@ -129,16 +131,16 @@ display() {
 			set style line 9 lt 1 lc rgb "4444444" lw 2 pt 15 ps 1.5
 			set style line 10 lt 1 lc rgb "9932000" lw 2 pt 16 ps 1.5
 
-			plot "xy$rankCoin[0].dat" u 1:2 lp ls 1 t "$rankCoin[0]", \
-			"xy$rankCoin[1].dat" u 1:2 lp ls 2 t "$rankCoin[1]", \
-			"xy$rankCoin[2].dat" u 1:2 lp ls 3 t "$rankCoin[2]", \
-			"xy$rankCoin[3].dat" u 1:2 lp ls 4 t "$rankCoin[3]", \
-			"xy$rankCoin[4].dat" u 1:2 lp ls 5 t "$rankCoin[4]", \
-			"xy$rankCoin[5].dat" u 1:2 lp ls 6 t "$rankCoin[5]", \
-			"xy$rankCoin[6].dat" u 1:2 lp ls 7 t "$rankCoin[6]", \
-			"xy$rankCoin[7].dat" u 1:2 lp ls 8 t "$rankCoin[7]", \
-			"xy$rankCoin[8].dat" u 1:2 lp ls 9 t "$rankCoin[8]", \
-			"xy$rankCoin[9].dat" u 1:2 lp ls 10 t "$rankCoin[9]"
+			plot "xy$rankCoin[0].dat" u 1:2 lp ls 1 t "$rankCoin[0]" w l, 
+			"xy$rankCoin[1].dat" u 1:2 lp ls 2 t "$rankCoin[1]" w l, 
+			"xy$rankCoin[2].dat" u 1:2 lp ls 3 t "$rankCoin[2]" w l,
+			"xy$rankCoin[3].dat" u 1:2 lp ls 4 t "$rankCoin[3]" w l,
+			"xy$rankCoin[4].dat" u 1:2 lp ls 5 t "$rankCoin[4]" w l,
+			"xy$rankCoin[5].dat" u 1:2 lp ls 6 t "$rankCoin[5]" w l,
+			"xy$rankCoin[6].dat" u 1:2 lp ls 7 t "$rankCoin[6]" w l,
+			"xy$rankCoin[7].dat" u 1:2 lp ls 8 t "$rankCoin[7]" w l,
+			"xy$rankCoin[8].dat" u 1:2 lp ls 9 t "$rankCoin[8]" w l,
+			"xy$rankCoin[9].dat" u 1:2 lp ls 10 t "$rankCoin[9]" w l
 
 			;;
 		*) echo "Invalid Input"
