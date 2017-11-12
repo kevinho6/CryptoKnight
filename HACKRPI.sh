@@ -220,8 +220,7 @@ sum_trans()
 		echo "-------------------------------"
 
 		holdings_file=`echo "$Username.holdings"`
-		echo $holdings_file
-		echo "$currency,$volume,$total_value,$difference" > $holdings_file 
+		echo "$total_value,$difference" > $holdings_file 
 	else
     	echo "Error: No File Specified"
     	exit 64
@@ -246,11 +245,12 @@ view_profile()
      	else
      		touch -f $file
      		echo "-------------------------------"
-		    echo "Value: $startAmount"
+		    echo "Value: $startingAmount"
 		    echo "-------------------------------"
 		    echo "Change: 0%"
 		    echo "-------------------------------"
      		echo "WARNING: TRANSACTION FILE IS EMPTY"
+
     	fi
     else
     	echo "Error: No Username Specified"
