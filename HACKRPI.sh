@@ -216,7 +216,7 @@ sum_trans()
 		echo "-------------------------------"
 
 		holdings_file=`echo "$username.holding"`
-		echo "$total_value,$difference" >> $holdings_file 
+		echo "$currency,$quantity,$total_value,$difference" >> $holdings_file 
 
 	else
     	echo "Error: No File Specified"
