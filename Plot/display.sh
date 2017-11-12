@@ -21,17 +21,17 @@ getTopTen() {
 		echo $line | grep "symbol" | awk -F: '{print $2}' >> topTen.txt
 	done
 }
-#grabHistory() {
-#	getTopTen
-#	
-#	while read symbol
-#	do
-#		echo $symbol $symbol $symbol
-		#echo "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG"
+grabHistory() {
+	getTopTen
+	
+	cat topTen.txt | while read symbol
+	do
+		echo $symbol $symbol $symbol
+		echo "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG"
 		
-#		wget -qO- "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG" > $symbol.txt
-#	done <(cat topTen.txt)
-#}
+		wget -qO- "https://min-api.cryptocompare.com/data/histoday?fsym=$symbol&tsym=USD&limit=60&aggregate=3&e=CCCAGG" > $symbol.txt
+	done
+}
  
 
 parseJSON() {
@@ -142,6 +142,9 @@ display() {
 			"xy$rankCoin[8].dat" u 1:2 lp ls 9 t "$rankCoin[8]" w l,
 			"xy$rankCoin[9].dat" u 1:2 lp ls 10 t "$rankCoin[9]" w l
 
+			;;
+		12) echo "Update Top Ten History"
+			grabHistory
 			;;
 		*) echo "Invalid Input"
 	esac
