@@ -13,10 +13,6 @@ displayMenu() {
     printf ": " # Because echo -n is not working
 }
 
-
-#WHEN BUYING HAVE THE CURRENT MARKET PRICE AND KEEP IT FLUCTUATING
-
-
 getAPIData() {
 	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt
 }
@@ -145,8 +141,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-#
-		if [ `cat $Username.tran | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.tran | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat $kevinsFile.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -178,6 +173,9 @@ sum_trans()
 		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
 
 		total_value=0
+
+		printf "" > kevinsFile.txt
+
 		for currency in `cat currency_names`
 		do
 			cat $file | grep $currency > one_currency
@@ -200,6 +198,8 @@ sum_trans()
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
+
+			echo "$currency,$sum" >> kevinsFile.txt
 
 		done
 
@@ -438,6 +438,7 @@ messaging_setup()
 	send_to=`echo "$user_phone@$user_carrier"`
 }
 
+<<<<<<< HEAD
 leader_board()
 {
 	rm -f all_user_holding
@@ -475,6 +476,8 @@ leader_board()
 
 # everytime you change a buy transaction, then call view_profile again
 
+=======
+>>>>>>> 629f738f78913960ea0586507a5f343052a9676e
 echo "Welcome to the Cryptocurrency Trading Simulator"
 echo
 
