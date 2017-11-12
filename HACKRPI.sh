@@ -15,6 +15,7 @@ displayMenu() {
 
 #WHEN BUYING HAVE THE CURRENT MARKET PRICE AND KEEP IT FLUCTUATING
 
+
 getAPIData() {
 	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt
 }
@@ -103,11 +104,11 @@ buy() {
 
 	echo
 	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
+	echo
 	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
+	echo
 	view_profile $Username
 #	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
-	echo
-
 }
 
 sell() {
@@ -143,6 +144,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
+#
 		if [ `cat $Username.tran | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.tran | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
@@ -154,15 +156,13 @@ sell() {
 	done
 	echo $availableCash > $Username.portValue
 
-#GOTTA UPDATE THE FILE EVERYTIME YOUR SELL SOMETHING
-
 	echo
 	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
-
+	echo
 	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
+	echo
 #	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
 	view_profile $Username
-	echo
 }
 
 sum_trans()
@@ -205,7 +205,11 @@ sum_trans()
 		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
 
 		echo "-------------------------------"
-		printf "Value: \$"
+		printf "USD: $"
+		printf "%0.2f\n" `cat $Username.portValue`
+
+		echo "-------------------------------"
+		printf "Value: $"
 		printf "%0.2f\n" $total_value
 		echo "-------------------------------"
 
@@ -217,7 +221,7 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$Username.holding"`
+		holdings_file=`echo "$Username.holdings"`
 		echo "$currency,$difference" >> $holdings_file 
 
 	else
@@ -324,6 +328,7 @@ login()
 				then
 					echo "Incorrect Password"
 				else
+					echo
 					echo "Welcome $Username!"
 					is_match=true
 				fi
@@ -373,14 +378,11 @@ fi
 
 while true
 do
-
-	echo
-	printf "Your Current Free Cash is $"
-	cat $Username.portValue
 	echo
 	displayMenu # Function Call
 
 	read userInput
+	echo
 
 	case $userInput in 
 		1) topCryptosData # Function Call
@@ -393,6 +395,7 @@ do
 		;;
 		5) echo 
 			echo "Goodbye!"
+			echo
 			break
 		;;
 		*) echo "That is not a valid input!"
