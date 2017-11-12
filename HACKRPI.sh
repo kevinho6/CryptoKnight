@@ -239,20 +239,21 @@ sum_trans()
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> portfolioHoldings.txt # add to the portfolioHoldings.txt file
-
 		done
 
 		echo "-------------------------------"
 		echo "Value: $total_value"
 		echo "-------------------------------"
 
-		difference=$(echo "$total_value - $startingAmount" | bc) # PARSE ERROR, just this line
-		difference=$(echo "$difference * 100" | bc) #
+		difference=$(echo "$total_value - $startingAmount" | bc) 
+		difference=$(echo "$difference * 100" | bc) 
 
-		change=$(echo "$difference / $startingAmount" | bc) #
+		change=$(echo "$difference / $startingAmount" | bc) 
 		echo "Change: $change%"
 		echo "-------------------------------"
+
+		holdings_file=`echo "$username.holding"`
+		echo "$currency,$difference" >> $holdings_file 
 
 	else
     	echo "Error: No File Specified"
