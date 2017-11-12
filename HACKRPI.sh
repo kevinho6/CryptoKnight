@@ -8,7 +8,8 @@ displayMenu() {
     echo "2) View Your Portfolio"
     echo "3) Buy"
     echo "4) Sell"
-    echo "5) Exit"
+    echo "5) View Leaderboard"
+    echo "6) Exit"
     printf ": " # Because echo -n is not working
 }
 
@@ -220,7 +221,8 @@ sum_trans()
 		echo "-------------------------------"
 
 		holdings_file=`echo "$Username.holdings"`
-		echo "$total_value,$difference" > $holdings_file 
+	    echo "$total_value,$difference" > $holdings_file
+
 	else
     	echo "Error: No File Specified"
     	exit 64
@@ -250,6 +252,8 @@ view_profile()
 		    echo "Change: 0%"
 		    echo "-------------------------------"
      		echo "WARNING: TRANSACTION FILE IS EMPTY"
+     		difference=0
+     		total_value=0
 
     	fi
     else
@@ -260,6 +264,81 @@ view_profile()
     rm -f currency_names
     rm -f one_currency
     rm -f temp
+}
+
+create_profile()
+{
+	if [ $# -ge 1 ]
+    then
+    	file=`printf "$Username"".tran"`
+    	if [ -f "$file" ]
+    	then
+    		c_sum_trans $file
+     	else
+     		touch -f $file
+     		difference=0
+     		total_value=0
+
+    	fi
+    else
+    	echo "Error: No Username Specified"
+    	exit 64
+    fi
+
+    rm -f currency_names
+    rm -f one_currency
+    rm -f temp
+}
+
+c_sum_trans()
+{
+	getAPIData	
+	cleanAPIData
+
+	if [ $# -ge 1 ]
+    then
+		file=$1
+
+		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
+
+		total_value=0
+		for currency in `cat currency_names`
+		do
+			cat $file | grep $currency > one_currency
+
+			sum=0
+			for trans in `cat one_currency`
+			do
+				type_tran=`echo $trans | awk -F, '{printf "%s",$1}'`
+				volume=`echo $trans | awk -F, '{printf "%d",$4}'`
+				current_price=`cat amysCleanFile.txt | grep $currency | awk -F, '{printf "%f",$2}'`
+
+				if [ $type_tran = "S" ]
+				then
+					sum=$(($sum-$volume))
+				else
+					sum=$(($sum+$volume))
+				fi	
+			done
+			
+			market_value=$(echo "$sum * $current_price" | bc)
+			total_value=$(echo "$total_value + $market_value" | bc)
+
+		done
+
+		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
+
+		difference=$(echo "$total_value - $startingAmount" | bc) 
+		difference=$(echo "$difference * 100" | bc) 
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
+
+		holdings_file=`echo "$Username.holdings"`
+	    echo "$total_value,$difference" > $holdings_file
+
+	else
+    	echo "Error: No File Specified"
+    	exit 64
+	fi	
 }
 
 login()
@@ -359,6 +438,41 @@ messaging_setup()
 	send_to=`echo "$user_phone@$user_carrier"`
 }
 
+leader_board()
+{
+	rm -f all_user_holding
+	touch -f all_user_holding
+	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
+
+	for user_i in `echo $board_users`
+	do
+		if [ -f $user_i.tran ] && [ `cat $user_i.tran | wc -l` -gt 0 ]
+		then 
+			create_profile $user_i.tran
+		fi
+		
+		if [ -f $user_i.tran ] && [ `cat $user_i.tran | wc -l` -gt 0 ]
+		then
+			holdings_user=`echo "$user_i.holdings"`
+			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
+			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
+
+			value_cash=$(echo "$total_user + $cash_user" | bc) 	
+
+			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
+		fi
+	done
+
+	echo "Rank  Username     Value"
+
+	leader_count=1
+	for rank in `sort -k2 -r -n -t, all_user_holding`
+	do
+		printf "%-5d %-50s\n" "$leader_count" "$rank" | sed s/,/"      "/g
+		leader_count=$((leader_count+1))
+	done
+}
+
 # everytime you change a buy transaction, then call view_profile again
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
@@ -391,7 +505,9 @@ do
 		;;
 		4) sell # Function Call
 		;;
-		5) echo 
+		5) leader_board
+		;;
+		6) echo 
 			echo "Goodbye!"
 			echo
 			break

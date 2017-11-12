@@ -1,21 +1,23 @@
 leader_board()
-{	# assumes holding made already for tran, BAD (call view profile without output)
+{
 	rm -f all_user_holding
 	touch -f all_user_holding
 	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
 
 	for user_i in `echo $board_users`
 	do
-		if [ -f $user_i.holdings ] && [ `cat $user_i.holdings | wc -l` -gt 0 ]
+		if [ -f $user_i.tran ] && [ `cat $user_i.tran | wc -l` -gt 0 ]
 		then 
-			holdings_user=`echo "$user_i.holdings"`
-			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
-			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
+			create_profile $user_i
+		fi
+		
+		holdings_user=`echo "$user_i.holdings"`
+		total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
+		cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
 
-			value_cash=$(echo "$total_user + $cash_user" | bc) 	
+		value_cash=$(echo "$total_user + $cash_user" | bc) 	
 
-			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding
-		fi 
+		printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
 	done
 
 	echo "Rank  Username     Value"
