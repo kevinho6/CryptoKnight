@@ -18,11 +18,11 @@ getAPIData() {
 }
 
 cleanAPIData() { # Gets rid of unneccesary api stuff
-	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g > cleanTopCryptosData.txt
+	cat topCryptosData.txt | sed s/"\""/""/g | sed s/" "/""/g | sed s/"},"/"}"/g | sed s/","/""/g | sed -e "s/]/""/" -e "s/\[/""/"  > cleanTopCryptosData.txt
 
 	# Clean data for Amy
 	index=0
-	printf "" > amysCleanFile.txt
+	>amysCleanFile.txt
 	while [ $index -lt 10 ]
 	do
 		newIndex=$(($index * 17 + 5))
@@ -30,7 +30,7 @@ cleanAPIData() { # Gets rid of unneccesary api stuff
 		newIndex=$(($index * 17 + 7))
 		printf ',' >> amysCleanFile.txt
 		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> amysCleanFile.txt
-		cat amysCleanFile.txt | echo >> amysCleanFile.txt
+		echo >> amysCleanFile.txt
 		index=$((index+1))
 	done
 }
@@ -56,59 +56,60 @@ topCryptosData() {
 }
 
 buy() {
-	topCryptosData # Function Call
+	#create_profile "$Username.tran"
+	#topCryptosData # Function Call
 
 	cryptoRankToBuy=0
 
-	while [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ]
+	while [[ $cryptoRankToBuy -le 0 ]] || [[ $cryptoRankToBuy -gt 10 ]]
 	do
 		printf "Input the rank of the cryptocurrency that you want to buy: "
 		read cryptoRankToBuy
-		if [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ]
+		if [[ $cryptoRankToBuy -le 0 ]] || [[ $cryptoRankToBuy -gt 10 ]]
 		then
 			echo "Invalid Rank"
 		fi
 	done
 
 	quantityToBuy=0
-	availableCash=`cat $Username.portValue`
-	while [ $quantityToBuy -le 0 ]
+	availableCash=`cat "$Username.portValue"`
+	while [[ $quantityToBuy -le 0 ]]
 	do
 		printf "Input the quantity that you want to buy: "
 		read quantityToBuy
-		if [ $quantityToBuy -le 0 ]
+		if [[ $quantityToBuy -le 0 ]]
 		then
 			echo "Invalid quantity"
 		fi
 
 		index=$((($cryptoRankToBuy - 1) * 17 + 7)) # Takes the line that has the price
 		buyMarketPrice=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
-		totalMarketPrice=$(echo "$quantityToBuy * $buyMarketPrice" | bc)
+		totalMarketPrice=`echo "$quantityToBuy * $buyMarketPrice" | bc`
 
 		index=$((($cryptoRankToBuy - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ $(echo "$availableCash - $totalMarketPrice" | bc) -gt 0 ]
+		if [[ `echo "$availableCash - $totalMarketPrice" | bc` < 0 ]]
 		then
 			echo "You don't have enough cash available to buy $quantityToBuy $cryptoTicker"
 			echo
 			quantityToBuy=0
 		else
-			availableCash=$(echo "$availableCash - $totalMarketPrice" | bc)
+			availableCash=`echo "$availableCash - $totalMarketPrice" | bc`
 		fi
 	done
-	echo $availableCash > $Username.portValue
 
 	echo
 	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
 	echo
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
 	echo
-	view_profile $Username
+	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
+	#view_profile $Username
 #	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
 }
 
 sell() {
+	#create_profile "$Username.tran"
 	topCryptosData # Function Call
 
 	cryptoRankToSell=0
@@ -136,18 +137,18 @@ sell() {
 	
 		index=$((($cryptoRankToSell - 1) * 17 + 7)) # Takes the line that has the price
 		sellMarketPrice=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
-		totalMarketPrice=$(echo "$quantityToSell * $sellMarketPrice" | bc)
+		totalMarketPrice=`echo "$quantityToSell * $sellMarketPrice" | bc`
 
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ `cat $Username.stocks | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat "$Username.stocks" | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat "$Username.stocks" | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
 			quantityToSell=0
 		else
-			availableCash=$(echo "$availableCash + $totalMarketPrice" | bc)
+			availableCash=`echo "$availableCash + $totalMarketPrice" | bc`
 		fi
 	done
 	echo $availableCash > $Username.portValue
@@ -155,10 +156,10 @@ sell() {
 	echo
 	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
 	echo
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
+	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $Username.tran
 	echo
-#	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
-	view_profile $Username
+#	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_t
+	#view_profile $Username
 }
 
 sum_trans()
@@ -170,11 +171,9 @@ sum_trans()
     then
 		file=$1
 
-		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
+		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n", $2}' | uniq > currency_names
 
 		total_value=0
-
-		printf "" > kevinsFile.txt
 
 		for currency in `cat currency_names`
 		do
@@ -186,42 +185,45 @@ sum_trans()
 				type_tran=`echo $trans | awk -F, '{printf "%s",$1}'`
 				volume=`echo $trans | awk -F, '{printf "%d",$4}'`
 				current_price=`cat amysCleanFile.txt | grep $currency | awk -F, '{printf "%f",$2}'`
-
+		
 				if [ $type_tran = "S" ]
 				then
-					sum=$(($sum-$volume))
+					sum=$((sum-volume))
+					echo "TEST1:$sum"
 				else
-					sum=$(($sum+$volume))
+					sum=$((sum+volume))
+					echo "TEST2:$sum"
 				fi	
 			done
 			
-			market_value=$(echo "$sum * $current_price" | bc)
-			total_value=$(echo "$total_value + $market_value" | bc)
-			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
+			market_value=`echo "$sum * $current_price" | bc`
+			total_value=`echo "$total_value + $market_value" | bc`
+			printf "%-16s %-20s %-20s\n" "$sum" "$currency" "$market_value"
 
-			printf "$currency"",""$sum\n" >> $Username.stocks
+			echo "THIS IS THE SUM: $sum" # SAOIdjSIODJSAJDOJDJSAIOJSAOIJDSJDSOJAJIDJOSDJIOJDOIAJSODJSAODJOASJDIOSAJDOISAJDIJSAODSA
+
+			echo "$currency,$sum" > "$Username.stocks" #THIS IS WHAT AMY MADE FOR ME
 
 		done
 
-		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
+		total_value=`echo "$total_value" + cat "$Username.portValue" | bc`
 
 		echo "-------------------------------"
 		printf "USD: $"
-		printf "%0.2f\n" `cat $Username.portValue`
+		printf "%0.2f\n" `cat "$Username.portValue"`
 
 		echo "-------------------------------"
 		printf "Value: $"
 		printf "%0.2f\n" $total_value
 		echo "-------------------------------"
 
-		difference=$(echo "$total_value - $startingAmount" | bc) 
-		difference=$(echo "$difference * 100" | bc) 
+		difference=`echo "$total_value - $startingAmount" | bc` 
+		difference=`echo "$difference * 100" | bc` 
 		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,$difference" > $holdings_file
+	    echo "$total_value,$difference" >> $Username.holdings # THIS IS MESSED UP BECAUSE OF CHANGE AND DIFFERENCE
 
 	else
     	echo "Error: No File Specified"
@@ -238,7 +240,7 @@ view_profile()
     	echo "|       Profile        |"
     	echo "------------------------"
     	echo "Username: $Username"
-    	file=`printf "$Username"".tran"`
+    	file=`printf "$Username.tran"`
     	echo "Quantity         Holdings             Market Value"
 	    echo "--------         --------             ------------"
     	if [ -f "$file" ]
@@ -254,26 +256,25 @@ view_profile()
      		echo "WARNING: TRANSACTION FILE IS EMPTY"
      		difference=0
      		total_value=0
-
     	fi
     else
     	echo "Error: No Username Specified"
     	exit 64
     fi
 
-    rm -f currency_names
-    rm -f one_currency
-    rm -f temp
+    #rm -f currency_names
+    #rm -f one_currency
+    #rm -f temp
 }
 
 create_profile()
 {
 	if [ $# -ge 1 ]
     then
-    	file=`printf "$Username"".tran"`
+    	file=`printf "$Username.tran"`
     	if [ -f "$file" ]
     	then
-    		c_sum_trans $file
+    		sum_trans $file
      	else
      		touch -f $file
      		difference=0
@@ -315,25 +316,26 @@ c_sum_trans()
 
 				if [ $type_tran = "S" ]
 				then
-					sum=$(($sum-$volume))
+					sum=`expr "$sum" - "$volume"` 
 				else
 					sum=$(($sum+$volume))
 				fi	
 			done
 			
-			market_value=$(echo "$sum * $current_price" | bc)
-			total_value=$(echo "$total_value + $market_value" | bc)
+			market_value=`echo "$sum * $current_price" | bc`
+			total_value=`echo "$total_value + $market_value" | bc`
+
+			echo "$currency,$sum" > "$Username.stocks"
 
 		done
 
-		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
-
-		difference=$(echo "$total_value - $startingAmount" | bc) 
-		difference=$(echo "$difference * 100" | bc) 
+		total_value=`echo "$total_value + cat $Username.portValue" | bc`
+		difference=`echo "$total_value - $startingAmount" | bc` 
+		difference=`echo "$difference * 100" | bc` 
 		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
 
-		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,$difference" > $holdings_file
+		#holdings_file=`echo "$Username.holdings"`
+	    echo "$total_value,$difference" > $Username.holdings
 
 	else
     	echo "Error: No File Specified"
@@ -386,7 +388,7 @@ login()
 				printf "%s," "$phone" >> users.txt
 				echo $carrier >> users.txt
 
-				printf "$startingAmount" > "$Username"".portValue"
+				printf "$startingAmount" > "$Username.portValue"
 			else
 				exit
 			fi
@@ -457,7 +459,7 @@ leader_board()
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
 
-			value_cash=$(echo "$total_user + $cash_user" | bc) 	
+			value_cash=`echo "$total_user + $cash_user" | bc` 	
 
 			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
 		fi
@@ -484,7 +486,7 @@ then
 	login
 
 	# login setup
-	transaction_file=`echo $Username.tran`
+	transaction_file=`echo "$Username.tran"`
 	# messaging_setup
 fi
 
