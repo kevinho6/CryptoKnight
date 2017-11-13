@@ -226,7 +226,7 @@ sum_trans()
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc)
-		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f\n", $1/$2}'`
 		difference=$(echo "$difference / 100" | bc)
 		echo "Change: $change%"
 		echo "-------------------------------"
@@ -344,7 +344,7 @@ c_sum_trans()
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc) 
-		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f\n", $1/$2}'`
 		difference=$(echo "$difference / 100" | bc) #
 
 		holdings_file=`echo "$Username.holdings"`
