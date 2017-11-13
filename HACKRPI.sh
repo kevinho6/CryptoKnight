@@ -1,3 +1,6 @@
+# CHANGES TO BE IMPLEMENTED
+# When you have 0 quantity, delete it from outputting it on the view_profile function
+
 clear
 
 startingAmount=100000
@@ -529,8 +532,7 @@ do
 		;;
 		6) visualize
 		;;
-		7) echo 
-			echo "Goodbye!"
+		7) echo "Goodbye!"
 			echo
 			break
 		;;
