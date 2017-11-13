@@ -10,6 +10,7 @@ displayMenu() {
     echo "4) Sell"
     echo "5) View Leaderboard"
     echo "6) Exit"
+    echo "7) Graph Data"
     printf ": " # Because echo -n is not working
 }
 
@@ -53,6 +54,8 @@ topCryptosData() {
 		echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}' #ADD THE PERCENTAGE SYMBOLS TO THE 3
 		echo
 	done
+
+	IFS=$' \t\n'
 }
 
 buy() {
@@ -72,7 +75,8 @@ buy() {
 
 	quantityToBuy=0
 	availableCash=`cat $Username.portValue`
-	while [ $quantityToBuy -le 0 ]
+	count_buy=0
+	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ]
 	do
 		printf "Input the quantity that you want to buy: "
 		read quantityToBuy
@@ -87,12 +91,13 @@ buy() {
 
 		index=$((($cryptoRankToBuy - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
-
-		if [ $(echo "$availableCash <= $totalMarketPrice" | bc) -eq 1 ]
+ 
+		if [ $(bc <<< "$availableCash < $totalMarketPrice") -eq 1 ]
 		then
 			echo "You don't have enough cash available to buy $quantityToBuy $cryptoTicker"
 			echo
 			quantityToBuy=0
+			count_buy=$((count_buy+1))
 		else
 			availableCash=$(echo "$availableCash - $totalMarketPrice" | bc)
 		fi
@@ -125,7 +130,8 @@ sell() {
 
 	quantityToSell=0
 	availableCash=`cat $Username.portValue`
-	while [ $quantityToSell -le 0 ]
+	count_sell=0
+	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ]
 	do
 		printf "Input the quantity that you want to sell: "
 		read quantityToSell
@@ -141,11 +147,12 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ `cat $kevinsFile.txt | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $kevinsFile.txt | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat $Username.stocks | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.stocks | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
 			quantityToSell=0
+			count_sell=$((count_sell+1))
 		else
 			availableCash=$(echo "$availableCash + $totalMarketPrice" | bc)
 		fi
@@ -157,12 +164,14 @@ sell() {
 	echo
 	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
 	echo
+
 #	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
 	view_profile $Username
 }
 
 sum_trans()
 {
+	rm -f $Username.stocks
 	getAPIData	
 	cleanAPIData
 
@@ -173,8 +182,6 @@ sum_trans()
 		cat $file | sort -t, -k2 | awk -F, '{printf "%s\n",$2}' | uniq > currency_names
 
 		total_value=0
-
-		printf "" > kevinsFile.txt
 
 		for currency in `cat currency_names`
 		do
@@ -199,11 +206,11 @@ sum_trans()
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> kevinsFile.txt
+			echo "$currency,$sum" >> $Username.stocks #
 
 		done
 
-		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
+		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
 
 		echo "-------------------------------"
 		printf "USD: $"
@@ -220,8 +227,8 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,$difference" > $holdings_file
+		holdings_file=`echo "$Username.holdings"` #
+	    echo "$total_value,$difference" > $holdings_file #
 
 	else
     	echo "Error: No File Specified"
@@ -292,6 +299,7 @@ create_profile()
 
 c_sum_trans()
 {
+	rm -f $Username.stocks
 	getAPIData	
 	cleanAPIData
 
@@ -324,9 +332,11 @@ c_sum_trans()
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
 
+			echo "$currency,$sum" >> $Username.stocks
+
 		done
 
-		total_value=$(echo "$total_value + `cat kevinho.portValue`" | bc)
+		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc) 
@@ -473,6 +483,12 @@ leader_board()
 	done
 }
 
+visualize()
+{
+	SCRIPT_PATH="./Plot/display.sh"
+
+	source "$SCRIPT_PATH"
+}
 # everytime you change a buy transaction, then call view_profile again
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
@@ -511,6 +527,8 @@ do
 			echo "Goodbye!"
 			echo
 			break
+		;;
+		7) visualize
 		;;
 		*) echo "That is not a valid input!"
 	esac
