@@ -1,3 +1,6 @@
+# CHANGES TO BE IMPLEMENTED
+# When you have 0 quantity, delete it from outputting it on the view_profile function
+
 clear
 
 startingAmount=100000
@@ -9,9 +12,9 @@ displayMenu() {
     echo "3) Buy"
     echo "4) Sell"
     echo "5) View Leaderboard"
-    echo "6) Exit"
-    echo "7) Graph Data"
-    printf ": " # Because echo -n is not working
+    echo "6) View Graph"
+    echo "7) Exit"
+    printf ": "
 }
 
 getAPIData() {
@@ -206,7 +209,7 @@ sum_trans()
 			total_value=$(echo "$total_value + $market_value" | bc)
 			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> $Username.stocks #
+			echo "$currency,$sum" >> $Username.stocks
 
 		done
 
@@ -222,13 +225,15 @@ sum_trans()
 		echo "-------------------------------"
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
-		difference=$(echo "$difference * 100" | bc) 
-		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
+		difference=$(echo "$difference * 100" | bc)
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f\n", $1/$2}'`
+		difference=$(echo "$difference / 100" | bc)
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$Username.holdings"` #
-	    echo "$total_value,$difference" > $holdings_file #
+		holdings_file=`echo "$Username.holdings"`
+	    echo "$total_value,`cat $Username.portValue`" > $holdings_file
+
 
 	else
     	echo "Error: No File Specified"
@@ -236,7 +241,6 @@ sum_trans()
 	fi	
 }
 
-# main function
 view_profile()
 {   
 	if [ $# -ge 1 ]
@@ -340,10 +344,11 @@ c_sum_trans()
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc) 
-		change=`echo "$difference $startingAmount" | awk '{printf "%.2f \n", $1/$2}'`
+		change=`echo "$difference $startingAmount" | awk '{printf "%.2f\n", $1/$2}'`
+		difference=$(echo "$difference / 100" | bc) #
 
 		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,$difference" > $holdings_file
+	    echo "$total_value,`cat $Username.portValue`" > $holdings_file
 
 	else
     	echo "Error: No File Specified"
@@ -354,8 +359,10 @@ c_sum_trans()
 login()
 {	if [ -f users.txt ]
 	then
-		echo "Enter Username: "
-		read Username
+#		echo "Enter Username: "
+#		read Username
+
+		Username="kevinho" # BYPASS LOGIN FOR NOW
 
 		is_user=`cat users.txt | awk -F, '{printf "%s\n",$1}' | grep -w $Username | wc -l`
 
@@ -406,8 +413,10 @@ login()
 
 			while [ $count -le 4 ] && [ $is_match = false ]
 			do
-				echo "Enter Password: "
-				read Password
+			#	echo "Enter Password: "
+			#	read Password
+
+				Password="ilovedennis" # BYPASS LOGIN FOR NOW
 
 				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
 
@@ -466,8 +475,7 @@ leader_board()
 			holdings_user=`echo "$user_i.holdings"`
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
-
-			value_cash=$(echo "$total_user + $cash_user" | bc) 	
+			value_cash=$(echo "$total_user" | bc) # SHOULDN'T REALLY BE CALLED value_cash BECAUSE IT'S THE value of the total portfolio
 
 			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
 		fi
@@ -489,7 +497,6 @@ visualize()
 
 	source "$SCRIPT_PATH"
 }
-# everytime you change a buy transaction, then call view_profile again
 
 echo "Welcome to the Cryptocurrency Trading Simulator"
 echo
@@ -523,12 +530,11 @@ do
 		;;
 		5) leader_board
 		;;
-		6) echo 
-			echo "Goodbye!"
+		6) visualize
+		;;
+		7) echo "Goodbye!"
 			echo
 			break
-		;;
-		7) visualize
 		;;
 		*) echo "That is not a valid input!"
 	esac
