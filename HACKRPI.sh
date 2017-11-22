@@ -544,7 +544,7 @@ messaging_setup()
 
 leader_board()
 {
-
+	clear
 	rm -f all_user_holding
 	touch -f all_user_holding
 	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
@@ -570,9 +570,9 @@ leader_board()
 
 	tput setab 9
     tput setaf 0
-	echo "                        "
-    echo "       Leaderboard      "
-    echo "                        "
+	echo "                                                 "
+    echo "                   Leaderboard                   "
+    echo "                                                 "
     tput setab 0
     tput setaf 7
 	echo "Rank  Username     Value"
@@ -638,3 +638,7 @@ do
 		*) echo "That is not a valid input!"
 	esac
 done
+
+tput setab 0
+tput setaf 7
+clear
