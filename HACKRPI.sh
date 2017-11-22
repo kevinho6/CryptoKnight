@@ -1,6 +1,8 @@
 # CHANGES TO BE IMPLEMENTED
 # When you have 0 quantity, delete it from outputting it on the view_profile function
 
+tput setab 0
+tput setaf 7
 clear
 
 startingAmount=100000
@@ -40,23 +42,104 @@ cleanAPIData() { # Gets rid of unneccesary api stuff
 }
 
 topCryptosData() {
+	clear
 	getAPIData	
 	cleanAPIData
 
 	IFS=$"{"
 
+	row=1
+	column=1
+	count=0
+	num_row=5
+
 	for crypto in `cat cleanTopCryptosData.txt`
 	do
-		echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'
-		echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'
-		echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'
-		echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'
-		echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'
-		echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'
-		echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'
-		echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}' #ADD THE PERCENTAGE SYMBOLS TO THE 3
-		echo
+
+		if [ $count -gt 0 ]
+		then 
+
+			rank=`echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'`
+			ticker=`echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'`
+			name=`echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'`
+			price_usd=`echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'`
+			price_btc=`echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'`
+			volume_24th=`echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'`
+			change_1h=`echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'`
+			change_24th=`echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}'` #ADD THE PERCENTAGE SYMBOLS TO THE 3
+
+			negative=`echo $change_1h | grep "-" | wc -l`
+			same=`echo $change_1h | grep "0.00" | wc -l`
+
+            tput setaf 0;
+
+            if [ $negative -eq 1 ]
+            then
+               tput setab 1;
+            elif [ $same -eq 1 ]
+            then
+               tput setab 3;
+            else
+               tput setab 2;
+            fi
+
+
+			tput cup $row $column
+			echo "                              "
+			tput cup $row $column
+			printf "%-30s" $rank
+
+			tput cup `expr "$row" + 1` $column
+			echo "                              "
+			tput cup `expr "$row" + 1` $column
+			printf "%-30s" $ticker
+
+			tput cup `expr "$row" + 2` $column
+			echo "                              "
+        	tput cup `expr "$row" + 2` $column
+        	printf "%-30s" $name
+
+        	tput cup `expr "$row" + 3` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 3` $column
+        	printf "%-30s" $price_usd
+
+       	    tput cup `expr "$row" + 4` $column
+     	    echo "                              "
+        	tput cup `expr "$row" + 4` $column
+        	printf "%-30s" $price_btc
+
+      	    tput cup `expr "$row" + 5` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 5` $column
+        	printf "%-30s" $volume_24th
+
+      	    tput cup `expr "$row" + 6` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 6` $column
+        	printf "%-30s" $change_1h
+
+        	tput cup `expr "$row" + 7` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 7` $column
+        	printf "%-30s" $change_24th
+ 
+      	    column=`expr "$column" + 40`
+
+            if [ $(($count % $num_row)) $num -eq 0 ]
+            then
+   	           row=`expr "$row" + 10`
+      	       column=1
+        	fi
+        fi
+
+        count=`expr "$count" + 1`     
 	done
+
+	tput setab 0
+    tput setaf 7
+
+    echo
 
 	IFS=$' \t\n'
 }
@@ -459,6 +542,7 @@ messaging_setup()
 
 leader_board()
 {
+
 	rm -f all_user_holding
 	touch -f all_user_holding
 	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
@@ -476,19 +560,23 @@ leader_board()
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
 			value_cash=$(echo "$total_user" | bc) # SHOULDN'T REALLY BE CALLED value_cash BECAUSE IT'S THE value of the total portfolio
+			value_cash_float=`printf "%0.2f\n" "$value_cash"`
 
-			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
+			printf "%-12s %-20s\n" "$user_i" "$value_cash_float" >> all_user_holding 
 		fi
 	done
 
 	echo "Rank  Username     Value"
+    IFS=$'\n'
 
 	leader_count=1
-	for rank in `sort -k2 -r -n -t, all_user_holding`
+	for rank in `sort -k2 -r -n all_user_holding`
 	do
-		printf "%-5d %-50s\n" "$leader_count" "$rank" | sed s/,/"      "/g
+		printf "%-5d %-50s\n" "$leader_count" "$rank"
 		leader_count=$((leader_count+1))
 	done
+
+	IFS=$' \t\n'
 }
 
 visualize()

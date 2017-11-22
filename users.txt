@@ -1,8 +1,6 @@
 kevinho,ilovedennis,6463067863,A
-<<<<<<< HEAD
 amyfeng,ilovedennis,6463067863,A
 arnold,ilovedennis,6463067863,A
 leo,ilovedennis,6463067863,A
 Nick,ilovedennis,6463211111,V
-=======
->>>>>>> a7daffa68ec5996fb7ec22424f3f189d441c7662
+
