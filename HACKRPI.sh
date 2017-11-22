@@ -1,5 +1,5 @@
-# CHANGES TO BE IMPLEMENTED
-# When you have 0 quantity, delete it from outputting it on the view_profile function
+# Crypto Turning Boolean 01 something something ...
+# Kevin Ho, Amy Feng, Arnold (?)
 
 tput setab 0
 tput setaf 7
@@ -290,9 +290,12 @@ sum_trans()
 			
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
-			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> $Username.stocks
+			if [ $sum -gt 0 ]
+			then
+				printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
+				echo "$currency,$sum" >> $Username.stocks
+			fi
 
 		done
 
@@ -345,7 +348,6 @@ view_profile()
 		    echo "-------------------------------"
 		    echo "Change: 0%"
 		    echo "-------------------------------"
-     		echo "WARNING: TRANSACTION FILE IS EMPTY"
      		difference=0
      		total_value=0
 
