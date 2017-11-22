@@ -568,6 +568,13 @@ leader_board()
 		fi
 	done
 
+	tput setab 9
+    tput setaf 0
+	echo "                        "
+    echo "       Leaderboard      "
+    echo "                        "
+    tput setab 0
+    tput setaf 7
 	echo "Rank  Username     Value"
     IFS=$'\n'
 
@@ -588,7 +595,9 @@ visualize()
 	source "$SCRIPT_PATH"
 }
 
-echo "Welcome to the Cryptocurrency Trading Simulator"
+cat coin_art.txt
+echo
+echo "     Welcome to the Cryptocurrency Trading Simulator"
 echo
 
 userInput=1
