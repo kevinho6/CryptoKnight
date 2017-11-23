@@ -148,8 +148,9 @@ buy() {
 	topCryptosData # Function Call
 
 	cryptoRankToBuy=0
+	count_buy_quantity=0
 
-	while [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ]
+	while [ $count_buy_quantity -le 4 ] && ([ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to buy: "
 		read cryptoRankToBuy
@@ -157,12 +158,14 @@ buy() {
 		then
 			echo "Invalid Rank"
 		fi
+
+		count_buy_quantity=$((count_buy_quantity+1))
 	done
 
 	quantityToBuy=0
 	availableCash=`cat $Username.portValue`
 	count_buy=0
-	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ]
+	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ] && [ $count_buy_quantity -le 4 ]
 	do
 		printf "Input the quantity that you want to buy: "
 		read quantityToBuy
@@ -190,21 +193,25 @@ buy() {
 	done
 	echo $availableCash > $Username.portValue
 
-	echo
-	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
-	echo
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
-	echo
-	view_profile $Username
-#	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
+	if [ $quantityToBuy -gt 0 ]
+	then
+		echo
+		echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
+		echo
+		echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
+		echo
+		view_profile $Username
+		echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+	fi
 }
 
 sell() {
 	topCryptosData # Function Call
 
 	cryptoRankToSell=0
+	count_sell_quantity=0
 
-	while [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ]
+	while [ $count_sell_quantity -le 4 ] && ([ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to sell: "
 		read cryptoRankToSell
@@ -212,12 +219,14 @@ sell() {
 		then
 			echo "Invalid Rank"
 		fi
+
+		count_sell_quantity=$((count_sell_quantity+1))
 	done
 
 	quantityToSell=0
 	availableCash=`cat $Username.portValue`
 	count_sell=0
-	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ]
+	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ] && [ $count_sell_quantity -le 4 ]
 	do
 		printf "Input the quantity that you want to sell: "
 		read quantityToSell
@@ -245,14 +254,17 @@ sell() {
 	done
 	echo $availableCash > $Username.portValue
 
-	echo
-	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
-	echo
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
-	echo
+	if [ $quantityToSell -gt 0 ]
+	then
+		echo
+		echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
+		echo
+		echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
+		echo
 
-#	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
-	view_profile $Username
+		echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+		view_profile $Username
+	fi
 }
 
 sum_trans()
@@ -329,11 +341,14 @@ sum_trans()
 
 view_profile()
 {   
+    clear
 	if [ $# -ge 1 ]
     then
-        echo "------------------------"
-    	echo "|       Profile        |"
-    	echo "------------------------"
+    	tput setab 4
+    	echo "                                              "
+    	echo "                    Profile                   "
+    	echo "                                              "
+    	tput setab 0
     	echo "Username: $Username"
     	file=`printf "$Username"".tran"`
     	echo "Quantity         Holdings             Market Value"
@@ -575,7 +590,8 @@ leader_board()
     echo "                                                 "
     tput setab 0
     tput setaf 7
-	echo "Rank  Username     Value"
+	echo "Rank  Username     Value                         "
+	echo "-------------------------------------------------"
     IFS=$'\n'
 
 	leader_count=1
@@ -607,7 +623,7 @@ then
 
 	# login setup
 	transaction_file=`echo $Username.tran`
-	# messaging_setup
+	messaging_setup
 fi
 
 while true
