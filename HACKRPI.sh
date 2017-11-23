@@ -628,6 +628,12 @@ fi
 
 while true
 do
+	if [ -f time_remaining ]
+    then
+            cat time_remaining
+    fi
+    # else time limit is off   
+
 	echo
 	displayMenu # Function Call
 
@@ -652,7 +658,7 @@ do
 			break
 		;;
 		*) echo "That is not a valid input!"
-	esac
+	esac 
 done
 
 tput setab 0
