@@ -631,6 +631,15 @@ do
 	if [ -f time_remaining ]
     then
             cat time_remaining
+
+          	time_left=`cat time_remaining | grep 0:0:0:0:0 | wc -l`
+            if [ $time_left -eq 1 ]
+            then
+            	leader_board
+            	echo
+            	echo "Time has Expired!"
+            	exit
+            fi
     fi
     # else time limit is off   
 
