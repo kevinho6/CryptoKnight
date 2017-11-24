@@ -2,7 +2,11 @@
 # When you have 0 quantity, delete it from outputting it on the view_profile function
 # Should include the price that the user bought each crypto at and also percentage change from bought and market price
 # Should store all the data files in folders
+# CryptoKnight
+# Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
 
+tput setab 0
+tput setaf 7
 clear
 
 startingAmount=100000
@@ -42,23 +46,104 @@ cleanAPIData() { # Gets rid of unneccesary api stuff
 }
 
 topCryptosData() {
+	clear
 	getAPIData	
 	cleanAPIData
 
 	IFS=$"{"
 
+	row=1
+	column=1
+	count=0
+	num_row=5
+
 	for crypto in `cat cleanTopCryptosData.txt`
 	do
-		echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'
-		echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'
-		echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'
-		echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'
-		echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'
-		echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'
-		echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'
-		echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}' #ADD THE PERCENTAGE SYMBOLS TO THE 3
-		echo
+
+		if [ $count -gt 0 ]
+		then 
+
+			rank=`echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'`
+			ticker=`echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'`
+			name=`echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'`
+			price_usd=`echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'`
+			price_btc=`echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'`
+			volume_24th=`echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'`
+			change_1h=`echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'`
+			change_24th=`echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}'` #ADD THE PERCENTAGE SYMBOLS TO THE 3
+
+			negative=`echo $change_1h | grep "-" | wc -l`
+			same=`echo $change_1h | grep "0.00" | wc -l`
+
+            tput setaf 0;
+
+            if [ $negative -eq 1 ]
+            then
+               tput setab 1;
+            elif [ $same -eq 1 ]
+            then
+               tput setab 3;
+            else
+               tput setab 2;
+            fi
+
+
+			tput cup $row $column
+			echo "                              "
+			tput cup $row $column
+			printf "%-30s" $rank
+
+			tput cup `expr "$row" + 1` $column
+			echo "                              "
+			tput cup `expr "$row" + 1` $column
+			printf "%-30s" $ticker
+
+			tput cup `expr "$row" + 2` $column
+			echo "                              "
+        	tput cup `expr "$row" + 2` $column
+        	printf "%-30s" $name
+
+        	tput cup `expr "$row" + 3` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 3` $column
+        	printf "%-30s" $price_usd
+
+       	    tput cup `expr "$row" + 4` $column
+     	    echo "                              "
+        	tput cup `expr "$row" + 4` $column
+        	printf "%-30s" $price_btc
+
+      	    tput cup `expr "$row" + 5` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 5` $column
+        	printf "%-30s" $volume_24th
+
+      	    tput cup `expr "$row" + 6` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 6` $column
+        	printf "%-30s" $change_1h
+
+        	tput cup `expr "$row" + 7` $column
+        	echo "                              "
+        	tput cup `expr "$row" + 7` $column
+        	printf "%-30s" $change_24th
+ 
+      	    column=`expr "$column" + 40`
+
+            if [ $(($count % $num_row)) $num -eq 0 ]
+            then
+   	           row=`expr "$row" + 10`
+      	       column=1
+        	fi
+        fi
+
+        count=`expr "$count" + 1`     
 	done
+
+	tput setab 0
+    tput setaf 7
+
+    echo
 
 	IFS=$' \t\n'
 }
@@ -67,8 +152,9 @@ buy() {
 	topCryptosData # Function Call
 
 	cryptoRankToBuy=0
+	count_buy_quantity=0
 
-	while [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ]
+	while [ $count_buy_quantity -le 4 ] && ([ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to buy: "
 		read cryptoRankToBuy
@@ -76,12 +162,14 @@ buy() {
 		then
 			echo "Invalid Rank"
 		fi
+
+		count_buy_quantity=$((count_buy_quantity+1))
 	done
 
 	quantityToBuy=0
 	availableCash=`cat $Username.portValue`
 	count_buy=0
-	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ]
+	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ] && [ $count_buy_quantity -le 4 ]
 	do
 		printf "Input the quantity that you want to buy: "
 		read quantityToBuy
@@ -109,21 +197,25 @@ buy() {
 	done
 	echo $availableCash > $Username.portValue
 
-	echo
-	echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
-	echo
-	echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
-	echo
-	view_profile $Username
-#	echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx $send_to
+	if [ $quantityToBuy -gt 0 ]
+	then
+		echo
+		echo "Bought $quantityToBuy $cryptoTicker for \$$totalMarketPrice"
+		echo
+		echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
+		echo
+		view_profile $Username
+		echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+	fi
 }
 
 sell() {
 	topCryptosData # Function Call
 
 	cryptoRankToSell=0
+	count_sell_quantity=0
 
-	while [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ]
+	while [ $count_sell_quantity -le 4 ] && ([ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to sell: "
 		read cryptoRankToSell
@@ -131,12 +223,14 @@ sell() {
 		then
 			echo "Invalid Rank"
 		fi
+
+		count_sell_quantity=$((count_sell_quantity+1))
 	done
 
 	quantityToSell=0
 	availableCash=`cat $Username.portValue`
 	count_sell=0
-	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ]
+	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ] && [ $count_sell_quantity -le 4 ]
 	do
 		printf "Input the quantity that you want to sell: "
 		read quantityToSell
@@ -164,14 +258,17 @@ sell() {
 	done
 	echo $availableCash > $Username.portValue
 
-	echo
-	echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
-	echo
-	echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
-	echo
+	if [ $quantityToSell -gt 0 ]
+	then
+		echo
+		echo "Sold $quantityToSell $cryptoTicker for \$$totalMarketPrice"
+		echo
+		echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
+		echo
 
-#	echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx $send_to
-	view_profile $Username
+		echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+		view_profile $Username
+	fi
 }
 
 sum_trans()
@@ -209,9 +306,12 @@ sum_trans()
 			
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
-			printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 
-			echo "$currency,$sum" >> $Username.stocks
+			if [ $sum -gt 0 ]
+			then
+				printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
+				echo "$currency,$sum" >> $Username.stocks
+			fi
 
 		done
 
@@ -245,11 +345,14 @@ sum_trans()
 
 view_profile()
 {   
+    clear
 	if [ $# -ge 1 ]
     then
-        echo "------------------------"
-    	echo "|       Profile        |"
-    	echo "------------------------"
+    	tput setab 4
+    	echo "                                              "
+    	echo "                    Profile                   "
+    	echo "                                              "
+    	tput setab 0
     	echo "Username: $Username"
     	file=`printf "$Username"".tran"`
     	echo "Quantity         Holdings             Market Value"
@@ -264,7 +367,6 @@ view_profile()
 		    echo "-------------------------------"
 		    echo "Change: 0%"
 		    echo "-------------------------------"
-     		echo "WARNING: TRANSACTION FILE IS EMPTY"
      		difference=0
      		total_value=0
 
@@ -461,6 +563,7 @@ messaging_setup()
 
 leader_board()
 {
+	clear
 	rm -f all_user_holding
 	touch -f all_user_holding
 	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
@@ -478,19 +581,31 @@ leader_board()
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
 			value_cash=$(echo "$total_user" | bc) # SHOULDN'T REALLY BE CALLED value_cash BECAUSE IT'S THE value of the total portfolio
+			value_cash_float=`printf "%0.2f\n" "$value_cash"`
 
-			printf "%s,%0.2f\n" "$user_i" "$value_cash" >> all_user_holding 
+			printf "%-12s %-20s\n" "$user_i" "$value_cash_float" >> all_user_holding 
 		fi
 	done
 
-	echo "Rank  Username     Value"
+	tput setab 9
+    tput setaf 0
+	echo "                                                 "
+    echo "                   Leaderboard                   "
+    echo "                                                 "
+    tput setab 0
+    tput setaf 7
+	echo "Rank  Username     Value                         "
+	echo "-------------------------------------------------"
+    IFS=$'\n'
 
 	leader_count=1
-	for rank in `sort -k2 -r -n -t, all_user_holding`
+	for rank in `sort -k2 -r -n all_user_holding`
 	do
-		printf "%-5d %-50s\n" "$leader_count" "$rank" | sed s/,/"      $"/g
+		printf "%-5d %-50s\n" "$leader_count" "$rank"
 		leader_count=$((leader_count+1))
 	done
+
+	IFS=$' \t\n'
 }
 
 visualize()
@@ -500,7 +615,9 @@ visualize()
 	source "$SCRIPT_PATH"
 }
 
-echo "Welcome to the Cryptocurrency Trading Simulator"
+cat coin_art.txt
+echo
+echo "     Welcome to the Cryptocurrency Trading Simulator"
 echo
 
 userInput=1
@@ -510,11 +627,26 @@ then
 
 	# login setup
 	transaction_file=`echo $Username.tran`
-	# messaging_setup
+	messaging_setup
 fi
 
 while true
 do
+	if [ -f time_remaining ]
+    then
+            cat time_remaining
+
+          	time_left=`cat time_remaining | grep 0:0:0:0:0 | wc -l`
+            if [ $time_left -eq 1 ]
+            then
+            	leader_board
+            	echo
+            	echo "Time has Expired!"
+            	exit
+            fi
+    fi
+    # else time limit is off   
+
 	echo
 	displayMenu # Function Call
 
@@ -539,5 +671,9 @@ do
 			break
 		;;
 		*) echo "That is not a valid input!"
-	esac
+	esac 
 done
+
+tput setab 0
+tput setaf 7
+clear

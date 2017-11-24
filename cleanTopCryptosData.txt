@@ -4,6 +4,7 @@ id:bitcoin
 name:Bitcoin
 symbol:BTC
 rank:1
+<<<<<<< HEAD
 price_usd:7896.23
 price_btc:1.0
 24h_volume_usd:5548980000.0
@@ -15,12 +16,26 @@ percent_change_1h:-0.8
 percent_change_24h:4.71
 percent_change_7d:16.97
 last_updated:1510937952
+=======
+price_usd:8159.58
+price_btc:1.0
+24h_volume_usd:4190780000.0
+market_cap_usd:136242441080
+available_supply:16697237.0
+total_supply:16697237.0
+max_supply:21000000.0
+percent_change_1h:0.05
+percent_change_24h:-0.24
+percent_change_7d:5.67
+last_updated:1511468052
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:ethereum
 name:Ethereum
 symbol:ETH
 rank:2
+<<<<<<< HEAD
 price_usd:332.998
 price_btc:0.0421409
 24h_volume_usd:736811000.0
@@ -32,12 +47,26 @@ percent_change_1h:-0.34
 percent_change_24h:0.08
 percent_change_7d:9.19
 last_updated:1510937950
+=======
+price_usd:418.605
+price_btc:0.0513811
+24h_volume_usd:1859400000.0
+market_cap_usd:40148349012.0
+available_supply:95909865.0
+total_supply:95909865.0
+max_supply:null
+percent_change_1h:-0.62
+percent_change_24h:13.58
+percent_change_7d:26.72
+last_updated:1511468051
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:bitcoin-cash
 name:BitcoinCash
 symbol:BCH
 rank:3
+<<<<<<< HEAD
 price_usd:1096.38
 price_btc:0.138747
 24h_volume_usd:3108250000.0
@@ -49,12 +78,26 @@ percent_change_1h:1.99
 percent_change_24h:6.07
 percent_change_7d:26.47
 last_updated:1510937965
+=======
+price_usd:1568.2
+price_btc:0.192486
+24h_volume_usd:3695050000.0
+market_cap_usd:26374889315.0
+available_supply:16818575.0
+total_supply:16818575.0
+max_supply:21000000.0
+percent_change_1h:-0.29
+percent_change_24h:19.34
+percent_change_7d:58.3
+last_updated:1511468067
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:ripple
 name:Ripple
 symbol:XRP
 rank:4
+<<<<<<< HEAD
 price_usd:0.229334
 price_btc:0.00002902
 24h_volume_usd:562752000.0
@@ -66,11 +109,42 @@ percent_change_1h:0.31
 percent_change_24h:-2.97
 percent_change_7d:9.6
 last_updated:1510937941
+=======
+price_usd:0.248114
+price_btc:0.00003045
+24h_volume_usd:245634000.0
+market_cap_usd:9582874869.0
+available_supply:38622870411.0
+total_supply:99993173757.0
+max_supply:100000000000
+percent_change_1h:-0.06
+percent_change_24h:4.55
+percent_change_7d:5.96
+last_updated:1511468041
+}
+{
+id:dash
+name:Dash
+symbol:DASH
+rank:5
+price_usd:572.864
+price_btc:0.0703154
+24h_volume_usd:203262000.0
+market_cap_usd:4414625271.0
+available_supply:7706236.0
+total_supply:7706236.0
+max_supply:18900000.0
+percent_change_1h:0.27
+percent_change_24h:0.09
+percent_change_7d:36.94
+last_updated:1511468046
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:litecoin
 name:Litecoin
 symbol:LTC
+<<<<<<< HEAD
 rank:5
 price_usd:67.627
 price_btc:0.0085582
@@ -83,6 +157,20 @@ percent_change_1h:0.12
 percent_change_24h:5.56
 percent_change_7d:11.76
 last_updated:1510937942
+=======
+rank:6
+price_usd:75.5674
+price_btc:0.00927542
+24h_volume_usd:310326000.0
+market_cap_usd:4077609963.0
+available_supply:53959908.0
+total_supply:53959908.0
+max_supply:84000000.0
+percent_change_1h:-0.79
+percent_change_24h:6.29
+percent_change_7d:14.9
+last_updated:1511468041
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:dash
@@ -106,6 +194,7 @@ id:iota
 name:IOTA
 symbol:MIOTA
 rank:7
+<<<<<<< HEAD
 price_usd:0.808292
 price_btc:0.00010229
 24h_volume_usd:130536000.0
@@ -117,11 +206,42 @@ percent_change_1h:-1.91
 percent_change_24h:-1.4
 percent_change_7d:62.81
 last_updated:1510937963
+=======
+price_usd:165.35
+price_btc:0.0202957
+24h_volume_usd:160329000.0
+market_cap_usd:2544812685.0
+available_supply:15390461.0
+total_supply:15390461.0
+max_supply:null
+percent_change_1h:0.05
+percent_change_24h:3.55
+percent_change_7d:36.05
+last_updated:1511468043
+}
+{
+id:iota
+name:IOTA
+symbol:MIOTA
+rank:8
+price_usd:0.858391
+price_btc:0.00010536
+24h_volume_usd:64885100.0
+market_cap_usd:2385923779.0
+available_supply:2779530283.0
+total_supply:2779530283.0
+max_supply:2779530283.0
+percent_change_1h:4.05
+percent_change_24h:-2.73
+percent_change_7d:2.44
+last_updated:1511468063
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:neo
 name:NEO
 symbol:NEO
+<<<<<<< HEAD
 rank:8
 price_usd:31.5586
 price_btc:0.00399375
@@ -151,12 +271,27 @@ percent_change_1h:-0.63
 percent_change_24h:0.17
 percent_change_7d:13.86
 last_updated:1510937943
+=======
+rank:9
+price_usd:35.1196
+price_btc:0.00431071
+24h_volume_usd:70345400.0
+market_cap_usd:2282774000.0
+available_supply:65000000.0
+total_supply:100000000.0
+max_supply:null
+percent_change_1h:-0.34
+percent_change_24h:-2.98
+percent_change_7d:21.69
+last_updated:1511468061
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 {
 id:nem
 name:NEM
 symbol:XEM
 rank:10
+<<<<<<< HEAD
 price_usd:0.195577
 price_btc:0.00002475
 24h_volume_usd:8679970.0
@@ -168,5 +303,18 @@ percent_change_1h:-0.38
 percent_change_24h:-3.01
 percent_change_7d:-4.26
 last_updated:1510937947
+=======
+price_usd:0.205116
+price_btc:0.00002518
+24h_volume_usd:8559850.0
+market_cap_usd:1846044000.0
+available_supply:8999999999.0
+total_supply:8999999999.0
+max_supply:null
+percent_change_1h:0.13
+percent_change_24h:1.15
+percent_change_7d:2.34
+last_updated:1511468048
+>>>>>>> 99b625704cf3db8af27e803d93210d3260f73c22
 }
 ]
