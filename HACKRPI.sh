@@ -1,5 +1,7 @@
 # CHANGES TO BE IMPLEMENTED
 # When you have 0 quantity, delete it from outputting it on the view_profile function
+# Should include the price that the user bought each crypto at and also percentage change from bought and market price
+# Should store all the data files in folders
 
 clear
 
@@ -486,7 +488,7 @@ leader_board()
 	leader_count=1
 	for rank in `sort -k2 -r -n -t, all_user_holding`
 	do
-		printf "%-5d %-50s\n" "$leader_count" "$rank" | sed s/,/"      "/g
+		printf "%-5d %-50s\n" "$leader_count" "$rank" | sed s/,/"      $"/g
 		leader_count=$((leader_count+1))
 	done
 }
