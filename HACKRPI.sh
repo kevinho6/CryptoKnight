@@ -21,7 +21,7 @@ displayMenu() {
     echo "3) Buy"
     echo "4) Sell"
     echo "5) CryptoGenie"
-    echo "6) News"
+    echo "6) Market News"
     echo "7) View Leaderboard"
     echo "8) Exit"
     printf ": "
@@ -704,7 +704,7 @@ cryptoGenie()
 news()
 {
 	wget -qO- "https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=8f163841d3864e319a9773eac3c1d63b" > cryptoNews.txt
-	cat cryptoNews.txt | sed 's/'\",\"'/\'$'\n/g' | grep "title" | sed 's/title'\":\"'//g' > cryptoNews2.txt
+	cat cryptoNews.txt | sed 's/'\",\"'/\'$'\n/g' | grep "title" | sed 's/title'\":\"'//g' | sed 's/ - CryptoCoinsNews//g' > cryptoNews2.txt
 	mv cryptoNews2.txt cryptoNews.txt
 	cat cryptoNews.txt
 }
