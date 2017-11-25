@@ -1,7 +1,10 @@
 # CHANGES TO BE IMPLEMENTED
-# When you have 0 quantity, delete it from outputting it on the view_profile function
-# Should include the price that the user bought each crypto at and also percentage change from bought and market price
+
 # Should store all the data files in folders
+# Should include the price that the user bought each crypto at and also percentage change from bought and market price
+# What happens when you own a crypto and it's not in the top 10 anymore? SOLUTION: Make an if statement and then wget for that ticker and pull that information seperately
+# Bug & Error Checking
+
 # CryptoKnight
 # Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
 
@@ -17,9 +20,10 @@ displayMenu() {
     echo "2) View Your Portfolio"
     echo "3) Buy"
     echo "4) Sell"
-    echo "5) View Leaderboard"
-    echo "6) View Graph"
-    echo "7) Exit"
+    echo "5) CryptoGenie"
+    echo "6) News"
+    echo "7) View Leaderboard"
+    echo "8) Exit"
     printf ": "
 }
 
@@ -336,7 +340,6 @@ sum_trans()
 		holdings_file=`echo "$Username.holdings"`
 	    echo "$total_value,`cat $Username.portValue`" > $holdings_file
 
-
 	else
     	echo "Error: No File Specified"
     	exit 64
@@ -580,7 +583,7 @@ leader_board()
 			holdings_user=`echo "$user_i.holdings"`
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
-			value_cash=$(echo "$total_user" | bc) # SHOULDN'T REALLY BE CALLED value_cash BECAUSE IT'S THE value of the total portfolio
+			value_cash=$(echo "$total_user" | bc) # Shouldn't really be called value_cash because it's the value of the total portfolio
 			value_cash_float=`printf "%0.2f\n" "$value_cash"`
 
 			printf "%-12s %-20s\n" "$user_i" "$value_cash_float" >> all_user_holding 
@@ -606,6 +609,104 @@ leader_board()
 	done
 
 	IFS=$' \t\n'
+}
+
+cryptoGenie()
+{
+	echo "Welcome to CryptoGenie, your cryptocurrency investment advisor"
+	echo
+
+	printf "" > algorithmData.txt
+
+	index=0
+	while [ $index -lt 10 ]
+	do
+		newIndex=$(($index * 17 + 5))
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> algorithmData.txt
+		printf ',' >> algorithmData.txt
+		newIndex=$(($index * 17 + 14))
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> algorithmData.txt
+		printf ',' >> algorithmData.txt
+		newIndex=$(($index * 17 + 15))
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> algorithmData.txt
+		printf ',' >> algorithmData.txt
+		newIndex=$(($index * 17 + 16))
+		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> algorithmData.txt
+		cat algorithmData.txt | echo >> algorithmData.txt
+		index=$((index+1))
+	done
+
+	index=1
+	while [ $index -le 10 ]
+	do
+		sevenday=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $4}'`
+		oneday=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $3}'`
+		onehour=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $2}'`
+		algorithmTicker=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $1}'`
+
+		if [ $(bc <<< "$sevenday >= 10.0") -eq 1 ] # High positive weekly momentum
+		then
+			if [ $(bc <<< "$oneday >= 3.0") -eq 1 ] # High positive daily momentum
+			then
+				if [ $(bc <<< "$onehour >= 1.0") -eq 1 ] # Positive hourly momentum
+				then
+					status="Sell"
+				else # Negative hourly momentum
+					status="Sell"
+				fi
+			elif [ $(bc <<< "$oneday <= -3.0") -eq 1 ] # High negative daily momentum
+			then
+				if [ $(bc <<< "$onehour <= -1.0") -eq 1 ] # Negative hourly momentum
+				then
+					status="Buy"
+				else # Little hourly momentum
+					status="Buy"
+				fi
+			else # Medium to Low daily momentum
+				status="Hold"
+			fi
+
+		elif [ $(bc <<< "$sevenday <= -10.0") -eq 1 ] # High negative weekly momentum
+		then
+			if [ $(bc <<< "$oneday >= 3.0") -eq 1 ] # High positive daily momentum
+			then
+				if [ $(bc <<< "$onehour >= 1.0") -eq 1 ] # Positive hourly momentum
+				then
+					status="Buy"
+				else # Negative hourly momentum
+					status="Hold"
+				fi
+			elif [ $(bc <<< "$oneday <= -3.0") -eq 1 ] # High negative daily momentum
+			then
+				if [ $(bc <<< "$onehour <= -1.0") -eq 1 ] # Negative hourly momentum
+				then
+					status="Buy"
+				else # Little hourly momentum
+					status="Hold"
+				fi
+			else # Medium to Low daily momentum
+				status="Buy"
+			fi
+
+		else # Medium or Low weekly momentum
+			status="Hold"
+		fi
+
+		echo "$algorithmTicker,$status" >> algoResults.txt
+
+		index=$((index+1))
+	done
+
+	cat algoResults.txt | awk -F, '{ printf "%6s - %4s\n", $1, $2 }'
+	rm algoResults.txt
+}
+
+news()
+{
+	wget -qO- "https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=8f163841d3864e319a9773eac3c1d63b" > cryptoNews.txt
+	cat cryptoNews.txt | sed 's/'\",\"'/\'$'\n/g' | grep "title" | sed 's/title'\":\"'//g' > cryptoNews2.txt
+	mv cryptoNews2.txt cryptoNews.txt
+	cat cryptoNews.txt
 }
 
 visualize()
@@ -648,25 +749,27 @@ do
     # else time limit is off   
 
 	echo
-	displayMenu # Function Call
+	displayMenu
 
 	read userInput
 	echo
 
 	case $userInput in 
-		1) topCryptosData # Function Call
+		1) topCryptosData
 		;;
-		2) view_profile $Username # Function Call
+		2) view_profile $Username
 		;;
-		3) buy # Function Call
+		3) buy
 		;;
-		4) sell # Function Call
+		4) sell
 		;;
-		5) leader_board
+		5) cryptoGenie
 		;;
-		6) visualize
+		6) news
 		;;
-		7) echo "Goodbye!"
+		7) leader_board
+		;;
+		8) echo "Goodbye!"
 			echo
 			break
 		;;
