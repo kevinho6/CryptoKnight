@@ -70,11 +70,11 @@ topCryptosData() {
 			rank=`echo $crypto | grep "rank" | awk -F: '{print "Rank:", $2}'`
 			ticker=`echo $crypto | grep "symbol" | awk -F: '{print "Ticker:", $2}'`
 			name=`echo $crypto | grep "name" | awk -F: '{print "Name:", $2}'`
-			price_usd=`echo $crypto | grep "price_usd" | awk -F: '{print "Price USD:", $2}'`
+			price_usd=`echo $crypto | grep "price_usd" | awk -F: '{printf "Price USD: " "%0.2f", $2}'`
 			price_btc=`echo $crypto | grep "price_btc" | awk -F: '{print "Price BTC:", $2}'`
-			volume_24th=`echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}'`
-			change_1h=`echo $crypto | grep "percent_change_1h" | awk -F: '{print "1 Hour Change:", $2}'`
-			change_24th=`echo $crypto | grep "percent_change_24h" | awk -F: '{print "24 Hour Change:", $2}'` #ADD THE PERCENTAGE SYMBOLS TO THE 3
+			change_1h=`echo $crypto | grep "percent_change_1h" | awk -F: '{printf "1 Hour Change: " "%0.2f%%", $2}'`
+			change_24h=`echo $crypto | grep "percent_change_24h" | awk -F: '{printf "24 Hour Change: " "%0.2f%%", $2}'`
+			volume_24h=`echo $crypto | grep "24h_volume_usd" | awk -F: '{print "24 Hour Volume:", $2}' | cut -d. -f1`
 
 			negative=`echo $change_1h | grep "-" | wc -l`
 			same=`echo $change_1h | grep "0.00" | wc -l`
@@ -90,7 +90,6 @@ topCryptosData() {
             else
                tput setab 2;
             fi
-
 
 			tput cup $row $column
 			echo "                              "
@@ -120,17 +119,17 @@ topCryptosData() {
       	    tput cup `expr "$row" + 5` $column
         	echo "                              "
         	tput cup `expr "$row" + 5` $column
-        	printf "%-30s" $volume_24th
+        	printf "%-30s" $change_1h
 
       	    tput cup `expr "$row" + 6` $column
         	echo "                              "
         	tput cup `expr "$row" + 6` $column
-        	printf "%-30s" $change_1h
+        	printf "%-30s" $change_24h
 
         	tput cup `expr "$row" + 7` $column
         	echo "                              "
         	tput cup `expr "$row" + 7` $column
-        	printf "%-30s" $change_24th
+        	printf "%-30s" $volume_24h
  
       	    column=`expr "$column" + 40`
 
