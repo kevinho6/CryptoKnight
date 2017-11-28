@@ -4,12 +4,12 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 
 ## Features
 
-- [X] User can create an account
-- [X] User can log in and out of his or her account
-- [X] User can view the market data of the top ten cryptocurrencies
-- [X] User can view his or her portfolio
-- [X] User can buy and sell cryptocurrencies
-- [X] User can receive custom text alerts regarding their holdings
-- [X] User can receive algorithmic market advice
-- [X] User can view cryptocurrency market news
-- [X] User can view the leaderboard of all the users
+- [X] Users can create an account
+- [X] Users can log in and out of their accounts
+- [X] Users can view the market data of the top ten cryptocurrencies
+- [X] Users can view their portfolio
+- [X] Users can buy and sell cryptocurrencies
+- [X] Users can receive custom text alerts regarding their holdings
+- [X] Users can receive algorithmic market advice
+- [X] Users can view cryptocurrency market news
+- [X] Users can view the leaderboard of everyone using the program
