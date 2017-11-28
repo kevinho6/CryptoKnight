@@ -1,9 +1,16 @@
 # CHANGES TO BE IMPLEMENTED
 
-# Should store all the data files in folders
+# Remove the auto-login
+
+# IMPORT INTO THE STORM SERVER AND TEST THE TEXTING FUNCTIONALITY
+
+# Make the boxes for the cryptos smaller
 # Should include the price that the user bought each crypto at and also percentage change from bought and market price
 # What happens when you own a crypto and it's not in the top 10 anymore? SOLUTION: Make an if statement and then wget for that ticker and pull that information seperately
+# Change from top 10 to top 100 cryptocurrencies
+
 # Bug & Error Checking
+	# Make sure that all the data files are in folders
 
 # CryptoKnight
 # Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
@@ -170,7 +177,7 @@ buy() {
 	done
 
 	quantityToBuy=0
-	availableCash=`cat $Username.portValue`
+	availableCash=`cat ./PortfolioValues/$Username.portValue`
 	count_buy=0
 	while [ $quantityToBuy -le 0 ] && [ $count_buy -le 4 ] && [ $count_buy_quantity -le 4 ]
 	do
@@ -198,7 +205,7 @@ buy() {
 			availableCash=$(echo "$availableCash - $totalMarketPrice" | bc)
 		fi
 	done
-	echo $availableCash > $Username.portValue
+	echo $availableCash > ./PortfolioValues/$Username.portValue
 
 	if [ $quantityToBuy -gt 0 ]
 	then
@@ -231,7 +238,7 @@ sell() {
 	done
 
 	quantityToSell=0
-	availableCash=`cat $Username.portValue`
+	availableCash=`cat ./PortfolioValues/$Username.portValue`
 	count_sell=0
 	while [ $quantityToSell -le 0 ] && [ $count_sell -le 4 ] && [ $count_sell_quantity -le 4 ]
 	do
@@ -249,7 +256,7 @@ sell() {
 		index=$((($cryptoRankToSell - 1) * 17 + 5)) # Takes the line that has the ticker
 		cryptoTicker=`cat cleanTopCryptosData.txt | head -$index | tail -1 | awk -F: '{print $2}'`
 
-		if [ `cat $Username.stocks | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat $Username.stocks | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
+		if [ `cat ./Stocks/$Username.stocks | grep "$cryptoTicker" | wc -l` -eq 0 ] || [ `cat ./Stocks/$Username.stocks | grep "$cryptoTicker" | awk -F, '{print $2}'` -lt $quantityToSell ]
 		then
 			echo "You don't have enough $cryptoTicker coins to sell $quantityToSell $cryptoTicker"
 			echo
@@ -259,7 +266,7 @@ sell() {
 			availableCash=$(echo "$availableCash + $totalMarketPrice" | bc)
 		fi
 	done
-	echo $availableCash > $Username.portValue
+	echo $availableCash > ./PortfolioValues/$Username.portValue
 
 	if [ $quantityToSell -gt 0 ]
 	then
@@ -276,7 +283,7 @@ sell() {
 
 sum_trans()
 {
-	rm -f $Username.stocks
+	rm -f ./Stocks/$Username.stocks
 	getAPIData	
 	cleanAPIData
 
@@ -313,16 +320,16 @@ sum_trans()
 			if [ $sum -gt 0 ]
 			then
 				printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
-				echo "$currency,$sum" >> $Username.stocks
+				echo "$currency,$sum" >> ./Stocks/$Username.stocks
 			fi
 
 		done
 
-		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
+		total_value=$(echo "$total_value + `cat ./PortfolioValues/$Username.portValue`" | bc)
 
 		echo "-------------------------------"
 		printf "USD: $"
-		printf "%0.2f\n" `cat $Username.portValue`
+		printf "%0.2f\n" `cat ./PortfolioValues/$Username.portValue`
 
 		echo "-------------------------------"
 		printf "Value: $"
@@ -336,8 +343,8 @@ sum_trans()
 		echo "Change: $change%"
 		echo "-------------------------------"
 
-		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,`cat $Username.portValue`" > $holdings_file
+		holdings_file=`echo "./Holdings/$Username.holdings"`
+	    echo "$total_value,`cat ./PortfolioValues/$Username.portValue`" > $holdings_file
 
 	else
     	echo "Error: No File Specified"
@@ -356,7 +363,7 @@ view_profile()
     	echo "                                              "
     	tput setab 0
     	echo "Username: $Username"
-    	file=`printf "$Username"".tran"`
+    	file=`printf "./Transactions/$Username"".tran"`
     	echo "Quantity         Holdings             Market Value"
 	    echo "--------         --------             ------------"
     	if [ -f "$file" ]
@@ -387,7 +394,7 @@ create_profile()
 {
 	if [ $# -ge 1 ]
     then
-    	file=`printf "$Username"".tran"`
+    	file=`printf "./Transactions/$Username"".tran"`
     	if [ -f "$file" ]
     	then
     		c_sum_trans $file
@@ -409,7 +416,7 @@ create_profile()
 
 c_sum_trans()
 {
-	rm -f $Username.stocks
+	rm -f ./Stocks/$Username.stocks
 	getAPIData	
 	cleanAPIData
 
@@ -442,19 +449,19 @@ c_sum_trans()
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
 
-			echo "$currency,$sum" >> $Username.stocks
+			echo "$currency,$sum" >> ./Stocks/$Username.stocks
 
 		done
 
-		total_value=$(echo "$total_value + `cat $Username.portValue`" | bc)
+		total_value=$(echo "$total_value + `cat ./PortfolioValues/$Username.portValue`" | bc)
 
 		difference=$(echo "$total_value - $startingAmount" | bc) 
 		difference=$(echo "$difference * 100" | bc) 
 		change=`echo "$difference $startingAmount" | awk '{printf "%.2f\n", $1/$2}'`
 		difference=$(echo "$difference / 100" | bc) #
 
-		holdings_file=`echo "$Username.holdings"`
-	    echo "$total_value,`cat $Username.portValue`" > $holdings_file
+		holdings_file=`echo "./Holdings/$Username.holdings"`
+	    echo "$total_value,`cat ./PortfolioValues/$Username.portValue`" > $holdings_file
 
 	else
     	echo "Error: No File Specified"
@@ -509,7 +516,7 @@ login()
 				printf "%s," "$phone" >> users.txt
 				echo $carrier >> users.txt
 
-				printf "$startingAmount" > "$Username"".portValue"
+				printf "$startingAmount" > "./PortfolioValues/$Username"".portValue"
 			else
 				exit
 			fi
@@ -572,14 +579,14 @@ leader_board()
 
 	for user_i in `echo $board_users`
 	do
-		if [ -f $user_i.tran ] && [ `cat $user_i.tran | wc -l` -gt 0 ]
+		if [ -f ./Transactions/$user_i.tran ] && [ `cat ./Transactions/$user_i.tran | wc -l` -gt 0 ]
 		then 
-			create_profile $user_i.tran
+			create_profile ./Transactions/$user_i.tran
 		fi
 		
-		if [ -f $user_i.tran ] && [ `cat $user_i.tran | wc -l` -gt 0 ]
+		if [ -f ./Transactions/$user_i.tran ] && [ `cat ./Transactions/$user_i.tran | wc -l` -gt 0 ]
 		then
-			holdings_user=`echo "$user_i.holdings"`
+			holdings_user=`echo "./Holdings/$user_i.holdings"`
 			total_user=`cat $holdings_user | awk -F, '{printf "%f",$1}'`
 			cash_user=`cat $holdings_user | awk -F, '{printf "%f",$2}'`
 			value_cash=$(echo "$total_user" | bc) # Shouldn't really be called value_cash because it's the value of the total portfolio
@@ -612,6 +619,9 @@ leader_board()
 
 cryptoGenie()
 {
+	clear
+	getAPIData	
+	cleanAPIData
 	echo "Welcome to CryptoGenie, your cryptocurrency investment advisor"
 	echo
 
@@ -702,6 +712,7 @@ cryptoGenie()
 
 news()
 {
+	clear
 	wget -qO- "https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=8f163841d3864e319a9773eac3c1d63b" > cryptoNews.txt
 	cat cryptoNews.txt | sed 's/'\",\"'/\'$'\n/g' | grep "title" | sed 's/title'\":\"'//g' | sed 's/ - CryptoCoinsNews//g' > cryptoNews2.txt
 	mv cryptoNews2.txt cryptoNews.txt
@@ -717,6 +728,7 @@ visualize()
 
 cat coin_art.txt
 echo
+echo
 echo "     Welcome to the Cryptocurrency Trading Simulator"
 echo
 
@@ -726,7 +738,7 @@ then
 	login
 
 	# login setup
-	transaction_file=`echo $Username.tran`
+	transaction_file=`echo ./Transactions/$Username.tran`
 	messaging_setup
 fi
 
