@@ -215,7 +215,12 @@ buy() {
 		echo "B,$cryptoTicker,$buyMarketPrice,$quantityToBuy,$totalMarketPrice" >> $transaction_file
 		echo
 		view_profile $Username
-		echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+
+		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
+		if [ "$want_alerts" == "yes" ]
+		then
+			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+		fi
 	fi
 }
 
@@ -276,7 +281,11 @@ sell() {
 		echo "S,$cryptoTicker,$sellMarketPrice,$quantityToSell,$totalMarketPrice" >> $transaction_file
 		echo
 
-		echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
+		if [ "$want_alerts" == "yes" ]
+		then
+			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+		fi
 		view_profile $Username
 	fi
 }
@@ -472,8 +481,8 @@ c_sum_trans()
 login()
 {	if [ -f users.txt ]
 	then
-#		echo "Enter Username: "
-#		read Username
+		#echo "Enter Username: "
+		#read Username
 
 		Username="kevinho" # BYPASS LOGIN FOR NOW
 
@@ -511,10 +520,25 @@ login()
 				echo "(T: Tmobile, S: Sprint, V: Verison, A:AT&T)"
 				read carrier
 
+			    echo "Enter Email: "
+				read email
+
+				echo "Would you like to get alerts? (yes)/(no)"
+				read want_alerts
+
+				if [ "$want_alerts" == "yes" ]
+				then
+					echo "Use (Email) or (Text) or (Both)"
+					read alert_option
+				fi
+
 				printf "%s," "$Username" >> users.txt
 				printf "%s," "$Password" >> users.txt
 				printf "%s," "$phone" >> users.txt
-				echo $carrier >> users.txt
+				printf "%s," "$carrier" >> users.txt
+				printf "%s," "$email" >> users.txt
+				printf "%s," "$want_alerts" >> users.txt
+				echo $alerts_option >> users.txt
 
 				printf "$startingAmount" > "./PortfolioValues/$Username"".portValue"
 			else
@@ -526,8 +550,8 @@ login()
 
 			while [ $count -le 4 ] && [ $is_match = false ]
 			do
-			#	echo "Enter Password: "
-			#	read Password
+				#echo "Enter Password: "
+				#read Password
 
 				Password="ilovedennis" # BYPASS LOGIN FOR NOW
 
@@ -552,22 +576,35 @@ login()
 
 messaging_setup()
 {
-	user_phone=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$3}'`
-	user_carrier=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$4}'`
+	alert_option=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$7}'`
+	email=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$5}'`
+	if [ "$alert_option" == "Text" ] || [ "$alert_option" == "Both" ]
+	then
+		user_phone=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$3}'`
+		user_carrier=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$4}'`
 
-	case $user_carrier in
-		"T") user_carrier="tmomail.net"
-		;;
-		"S") user_carrier="messaging.sprintpcs.com"
-		;;
-		"V") user_carrier="vtext.com"
-		;;
-		"A") user_carrier="txt.att.net"
-		;;
-		*) echo "Sorry, we do not recognize your carrier"
-	esac 
+		case $user_carrier in
+			"T") user_carrier="tmomail.net"
+			;;
+			"S") user_carrier="messaging.sprintpcs.com"
+			;;
+			"V") user_carrier="vtext.com"
+			;;
+			"A") user_carrier="txt.att.net"
+			;;
+			*) echo "Sorry, we do not recognize your carrier"
+		esac 
 
-	send_to=`echo "$user_phone@$user_carrier"`
+		send_to=`echo "$user_phone@$user_carrier"`
+	elif [ "$alert_option" == "Email" ]
+	then 
+		send_to=`echo $email`
+	fi
+
+	if [ "$alert_option" == "Both" ]
+	then
+		send_to=`echo $send_to $email`
+	fi 
 }
 
 leader_board()
