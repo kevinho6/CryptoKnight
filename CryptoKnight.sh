@@ -2,7 +2,7 @@
 
 # Remove the auto-login
 
-# IMPORT INTO THE STORM SERVER AND TEST THE TEXTING FUNCTIONALITY
+# IMPORT INTO THE STORM SERVER AND TEST THE TEXTING FUNCTIONALITY (DONE- AMY)
 
 # Make the boxes for the cryptos smaller
 # Should include the price that the user bought each crypto at and also percentage change from bought and market price
