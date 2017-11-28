@@ -538,7 +538,7 @@ login()
 				printf "%s," "$carrier" >> users.txt
 				printf "%s," "$email" >> users.txt
 				printf "%s," "$want_alerts" >> users.txt
-				echo $alerts_option >> users.txt
+				echo $alert_option >> users.txt
 
 				printf "$startingAmount" > "./PortfolioValues/$Username"".portValue"
 			else
