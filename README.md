@@ -12,4 +12,4 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 - [X] Users can receive custom text alerts regarding their holdings
 - [X] Users can receive algorithmic market advice
 - [X] Users can view cryptocurrency market news
-- [X] Users can view the leaderboard of everyone using the program
+- [X] Users can view the rankings of everyone using the program
