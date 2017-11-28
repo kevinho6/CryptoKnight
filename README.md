@@ -5,7 +5,7 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 ## Features
 
 - [X] User can create an account
-- [X] User can log in and log out of his or her account
+- [X] User can log in and out of his or her account
 - [X] User can view the market data of the top ten cryptocurrencies
 - [X] User can view his or her portfolio
 - [X] User can buy and sell cryptocurrencies
