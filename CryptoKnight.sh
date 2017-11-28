@@ -186,6 +186,7 @@ buy() {
 		if [ $quantityToBuy -le 0 ]
 		then
 			echo "Invalid quantity"
+			count_buy=$((count_buy+1))
 		fi
 
 		index=$((($cryptoRankToBuy - 1) * 17 + 7)) # Takes the line that has the price
@@ -252,6 +253,7 @@ sell() {
 		if [ $quantityToSell -le 0 ]
 		then
 			echo "Invalid quantity"
+			count_sell=$((count_sell+1))
 		fi
 	
 		index=$((($cryptoRankToSell - 1) * 17 + 7)) # Takes the line that has the price
