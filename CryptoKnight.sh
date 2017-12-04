@@ -19,11 +19,13 @@ tput setab 0
 tput setaf 7
 clear
 
+numOfStocks=20;
+
 startingAmount=100000
 
 displayMenu() {
 	echo "Menu"
-    echo "1) View the Top 10 Cryptocurrencies"
+    echo "1) View the Top $numOfStocks Cryptocurrencies"
     echo "2) View Your Portfolio"
     echo "3) Buy"
     echo "4) Sell"
@@ -35,7 +37,7 @@ displayMenu() {
 }
 
 getAPIData() {
-	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=10 > topCryptosData.txt
+	wget -qO- https://api.coinmarketcap.com/v1/ticker/?limit=$numOfStocks > topCryptosData.txt
 }
 
 cleanAPIData() { # Gets rid of unneccesary api stuff
@@ -164,11 +166,11 @@ buy() {
 	cryptoRankToBuy=0
 	count_buy_quantity=0
 
-	while [ $count_buy_quantity -le 4 ] && ([ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ])
+	while [ $count_buy_quantity -le 4 ] && ([ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt $numOfStocks ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to buy: "
 		read cryptoRankToBuy
-		if [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt 10 ]
+		if [ $cryptoRankToBuy -le 0 ] || [ $cryptoRankToBuy -gt $numOfStocks ]
 		then
 			echo "Invalid Rank"
 		fi
@@ -231,11 +233,11 @@ sell() {
 	cryptoRankToSell=0
 	count_sell_quantity=0
 
-	while [ $count_sell_quantity -le 4 ] && ([ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ])
+	while [ $count_sell_quantity -le 4 ] && ([ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt $numOfStocks ])
 	do
 		printf "Input the rank of the cryptocurrency that you want to sell: "
 		read cryptoRankToSell
-		if [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt 10 ]
+		if [ $cryptoRankToSell -le 0 ] || [ $cryptoRankToSell -gt $numOfStocks ]
 		then
 			echo "Invalid Rank"
 		fi
@@ -667,7 +669,7 @@ cryptoGenie()
 	printf "" > algorithmData.txt
 
 	index=0
-	while [ $index -lt 10 ]
+	while [ $index -lt $numOfStocks ]
 	do
 		newIndex=$(($index * 17 + 5))
 		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> algorithmData.txt
@@ -685,7 +687,7 @@ cryptoGenie()
 	done
 
 	index=1
-	while [ $index -le 10 ]
+	while [ $index -le $numOfStocks ]
 	do
 		sevenday=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $4}'`
 		oneday=`cat algorithmData.txt | head -$index | tail -1 | awk -F, '{printf $3}'`
