@@ -61,6 +61,7 @@ topCryptosData() {
 	clear
 	getAPIData	
 	cleanAPIData
+	stocksPerPage=10;
 
 	IFS=$"{"
 
@@ -148,7 +149,34 @@ topCryptosData() {
         	fi
         fi
 
-        count=`expr "$count" + 1`     
+        if [ $(($count % $stocksPerPage)) $num -eq 0 ] && [ $count -gt 0 ]
+        then
+        	tput setab 0
+			tput setaf 7
+
+			if [ $count -ne $numOfStocks ]
+			then
+				echo 
+       		 	echo 
+      		  	echo "NEXT PAGE (Y/N)? | On Page $((count/stocksPerPage)) out of $((numOfStocks/stocksPerPage))"
+      		  	read nextpage
+
+      		  	if [ "$nextpage" == "Y" ]
+    		    then
+    		    	row=1
+    		    	column=1
+    		    else
+    		    	break
+     	       fi
+     	     else
+     	     	echo
+     	     	echo
+     	     	echo "                                                                                         "
+     	     fi
+  	  	fi
+
+        count=`expr "$count" + 1`   
+
 	done
 
 	tput setab 0
