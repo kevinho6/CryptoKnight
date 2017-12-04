@@ -45,7 +45,7 @@ cleanAPIData() { # Gets rid of unneccesary api stuff
 	# Clean data for Amy
 	index=0
 	printf "" > amysCleanFile.txt
-	while [ $index -lt 10 ]
+	while [ $index -lt $numOfStocks ]
 	do
 		newIndex=$(($index * 17 + 5))
 		cat cleanTopCryptosData.txt | head -$newIndex | tail -1 | awk -F: '{printf $2}' >> amysCleanFile.txt
