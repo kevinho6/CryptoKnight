@@ -4,6 +4,7 @@
         "name": "Bitcoin", 
         "symbol": "BTC", 
         "rank": "1", 
+<<<<<<< HEAD
         "price_usd": "11310.9", 
         "price_btc": "1.0", 
         "24h_volume_usd": "6941450000.0", 
@@ -15,12 +16,26 @@
         "percent_change_24h": "-3.92", 
         "percent_change_7d": "16.71", 
         "last_updated": "1512414554"
+=======
+        "price_usd": "11447.0", 
+        "price_btc": "1.0", 
+        "24h_volume_usd": "6871170000.0", 
+        "market_cap_usd": "191387544150", 
+        "available_supply": "16719450.0", 
+        "total_supply": "16719450.0", 
+        "max_supply": "21000000.0", 
+        "percent_change_1h": "0.29", 
+        "percent_change_24h": "-2.68", 
+        "percent_change_7d": "18.59", 
+        "last_updated": "1512400753"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "ethereum", 
         "name": "Ethereum", 
         "symbol": "ETH", 
         "rank": "2", 
+<<<<<<< HEAD
         "price_usd": "459.706", 
         "price_btc": "0.040979", 
         "24h_volume_usd": "1096510000.0", 
@@ -32,12 +47,26 @@
         "percent_change_24h": "-4.41", 
         "percent_change_7d": "-4.01", 
         "last_updated": "1512414562"
+=======
+        "price_usd": "466.693", 
+        "price_btc": "0.0409246", 
+        "24h_volume_usd": "1077310000.0", 
+        "market_cap_usd": "44863182805.0", 
+        "available_supply": "96129967.0", 
+        "total_supply": "96129967.0", 
+        "max_supply": null, 
+        "percent_change_1h": "0.43", 
+        "percent_change_24h": "-2.81", 
+        "percent_change_7d": "-2.33", 
+        "last_updated": "1512400755"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "bitcoin-cash", 
         "name": "Bitcoin Cash", 
         "symbol": "BCH", 
         "rank": "3", 
+<<<<<<< HEAD
         "price_usd": "1526.56", 
         "price_btc": "0.13608", 
         "24h_volume_usd": "872125000.0", 
@@ -49,12 +78,26 @@
         "percent_change_24h": "-6.59", 
         "percent_change_7d": "-7.14", 
         "last_updated": "1512414572"
+=======
+        "price_usd": "1531.7", 
+        "price_btc": "0.134315", 
+        "24h_volume_usd": "854667000.0", 
+        "market_cap_usd": "25790228505.0", 
+        "available_supply": "16837650.0", 
+        "total_supply": "16837650.0", 
+        "max_supply": "21000000.0", 
+        "percent_change_1h": "-0.01", 
+        "percent_change_24h": "-5.26", 
+        "percent_change_7d": "-7.08", 
+        "last_updated": "1512400775"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "ripple", 
         "name": "Ripple", 
         "symbol": "XRP", 
         "rank": "4", 
+<<<<<<< HEAD
         "price_usd": "0.249828", 
         "price_btc": "0.00002228", 
         "24h_volume_usd": "119643000.0", 
@@ -100,11 +143,76 @@
         "percent_change_24h": "-4.08", 
         "percent_change_7d": "19.96", 
         "last_updated": "1512414842"
+=======
+        "price_usd": "0.250522", 
+        "price_btc": "0.00002197", 
+        "24h_volume_usd": "124450000.0", 
+        "market_cap_usd": "9675878741.0", 
+        "available_supply": "38622870411.0", 
+        "total_supply": "99993173757.0", 
+        "max_supply": "100000000000", 
+        "percent_change_1h": "-0.17", 
+        "percent_change_24h": "-3.42", 
+        "percent_change_7d": "-0.38", 
+        "last_updated": "1512400741"
+    }, 
+    {
+        "id": "iota", 
+        "name": "IOTA", 
+        "symbol": "MIOTA", 
+        "rank": "5", 
+        "price_usd": "2.63944", 
+        "price_btc": "0.00023145", 
+        "24h_volume_usd": "884623000.0", 
+        "market_cap_usd": "7336403410.0", 
+        "available_supply": "2779530283.0", 
+        "total_supply": "2779530283.0", 
+        "max_supply": "2779530283.0", 
+        "percent_change_1h": "6.75", 
+        "percent_change_24h": "42.11", 
+        "percent_change_7d": "181.22", 
+        "last_updated": "1512400770"
+    }, 
+    {
+        "id": "dash", 
+        "name": "Dash", 
+        "symbol": "DASH", 
+        "rank": "6", 
+        "price_usd": "766.804", 
+        "price_btc": "0.0672414", 
+        "24h_volume_usd": "176515000.0", 
+        "market_cap_usd": "5929716208.0", 
+        "available_supply": "7733027.0", 
+        "total_supply": "7733027.0", 
+        "max_supply": "18900000.0", 
+        "percent_change_1h": "1.26", 
+        "percent_change_24h": "-3.06", 
+        "percent_change_7d": "22.2", 
+        "last_updated": "1512400743"
+    }, 
+    {
+        "id": "bitcoin-gold", 
+        "name": "Bitcoin Gold", 
+        "symbol": "BTG", 
+        "rank": "7", 
+        "price_usd": "322.028", 
+        "price_btc": "0.0282388", 
+        "24h_volume_usd": "151446000.0", 
+        "market_cap_usd": "5373998784.0", 
+        "available_supply": "16687986.0", 
+        "total_supply": "16787986.0", 
+        "max_supply": "21000000.0", 
+        "percent_change_1h": "-0.56", 
+        "percent_change_24h": "-4.32", 
+        "percent_change_7d": "-11.01", 
+        "last_updated": "1512400786"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "litecoin", 
         "name": "Litecoin", 
         "symbol": "LTC", 
+<<<<<<< HEAD
         "rank": "7", 
         "price_usd": "99.2037", 
         "price_btc": "0.0088459", 
@@ -134,12 +242,27 @@
         "percent_change_24h": "-4.28", 
         "percent_change_7d": "-11.79", 
         "last_updated": "1512414583"
+=======
+        "rank": "8", 
+        "price_usd": "99.1005", 
+        "price_btc": "0.00869017", 
+        "24h_volume_usd": "358284000.0", 
+        "market_cap_usd": "5363659287.0", 
+        "available_supply": "54123433.0", 
+        "total_supply": "54123433.0", 
+        "max_supply": "84000000.0", 
+        "percent_change_1h": "-0.09", 
+        "percent_change_24h": "-4.53", 
+        "percent_change_7d": "9.99", 
+        "last_updated": "1512400742"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "cardano", 
         "name": "Cardano", 
         "symbol": "ADA", 
         "rank": "9", 
+<<<<<<< HEAD
         "price_usd": "0.134136", 
         "price_btc": "0.00001196", 
         "24h_volume_usd": "71120300.0", 
@@ -151,12 +274,26 @@
         "percent_change_24h": "-1.57", 
         "percent_change_7d": "176.36", 
         "last_updated": "1512414581"
+=======
+        "price_usd": "0.132675", 
+        "price_btc": "0.00001163", 
+        "24h_volume_usd": "69949600.0", 
+        "market_cap_usd": "3439874084.0", 
+        "available_supply": "25927070538.0", 
+        "total_supply": "31112483745.0", 
+        "max_supply": "45000000000.0", 
+        "percent_change_1h": "0.26", 
+        "percent_change_24h": "-0.85", 
+        "percent_change_7d": "176.81", 
+        "last_updated": "1512400782"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "monero", 
         "name": "Monero", 
         "symbol": "XMR", 
         "rank": "10", 
+<<<<<<< HEAD
         "price_usd": "201.928", 
         "price_btc": "0.0180057", 
         "24h_volume_usd": "78891100.0", 
@@ -168,12 +305,26 @@
         "percent_change_24h": "-1.83", 
         "percent_change_7d": "20.39", 
         "last_updated": "1512414846"
+=======
+        "price_usd": "198.507", 
+        "price_btc": "0.0174072", 
+        "24h_volume_usd": "71584000.0", 
+        "market_cap_usd": "3063582278.0", 
+        "available_supply": "15433120.0", 
+        "total_supply": "15433120.0", 
+        "max_supply": null, 
+        "percent_change_1h": "0.87", 
+        "percent_change_24h": "-3.25", 
+        "percent_change_7d": "20.43", 
+        "last_updated": "1512400745"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "ethereum-classic", 
         "name": "Ethereum Classic", 
         "symbol": "ETC", 
         "rank": "11", 
+<<<<<<< HEAD
         "price_usd": "29.9192", 
         "price_btc": "0.00266705", 
         "24h_volume_usd": "303886000.0", 
@@ -185,12 +336,26 @@
         "percent_change_24h": "-4.15", 
         "percent_change_7d": "16.66", 
         "last_updated": "1512414557"
+=======
+        "price_usd": "30.1156", 
+        "price_btc": "0.00264085", 
+        "24h_volume_usd": "345631000.0", 
+        "market_cap_usd": "2953486402.0", 
+        "available_supply": "98071644.0", 
+        "total_supply": "98071644.0", 
+        "max_supply": null, 
+        "percent_change_1h": "-0.06", 
+        "percent_change_24h": "-3.8", 
+        "percent_change_7d": "23.44", 
+        "last_updated": "1512400758"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "neo", 
         "name": "NEO", 
         "symbol": "NEO", 
         "rank": "12", 
+<<<<<<< HEAD
         "price_usd": "40.8457", 
         "price_btc": "0.00364106", 
         "24h_volume_usd": "157732000.0", 
@@ -202,12 +367,26 @@
         "percent_change_24h": "5.49", 
         "percent_change_7d": "3.01", 
         "last_updated": "1512414558"
+=======
+        "price_usd": "42.0518", 
+        "price_btc": "0.00368754", 
+        "24h_volume_usd": "139269000.0", 
+        "market_cap_usd": "2733367000.0", 
+        "available_supply": "65000000.0", 
+        "total_supply": "100000000.0", 
+        "max_supply": null, 
+        "percent_change_1h": "1.62", 
+        "percent_change_24h": "11.99", 
+        "percent_change_7d": "6.54", 
+        "last_updated": "1512400759"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "nem", 
         "name": "NEM", 
         "symbol": "XEM", 
         "rank": "13", 
+<<<<<<< HEAD
         "price_usd": "0.279193", 
         "price_btc": "0.00002490", 
         "24h_volume_usd": "19108400.0", 
@@ -219,12 +398,26 @@
         "percent_change_24h": "-0.87", 
         "percent_change_7d": "25.87", 
         "last_updated": "1512414850"
+=======
+        "price_usd": "0.276777", 
+        "price_btc": "0.00002427", 
+        "24h_volume_usd": "19125800.0", 
+        "market_cap_usd": "2490993000.0", 
+        "available_supply": "8999999999.0", 
+        "total_supply": "8999999999.0", 
+        "max_supply": null, 
+        "percent_change_1h": "0.31", 
+        "percent_change_24h": "-0.96", 
+        "percent_change_7d": "26.77", 
+        "last_updated": "1512400750"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "eos", 
         "name": "EOS", 
         "symbol": "EOS", 
         "rank": "14", 
+<<<<<<< HEAD
         "price_usd": "3.72386", 
         "price_btc": "0.00033195", 
         "24h_volume_usd": "161098000.0", 
@@ -236,29 +429,56 @@
         "percent_change_24h": "-1.85", 
         "percent_change_7d": "32.34", 
         "last_updated": "1512414572"
+=======
+        "price_usd": "3.80311", 
+        "price_btc": "0.0003335", 
+        "24h_volume_usd": "159417000.0", 
+        "market_cap_usd": "1967430246.0", 
+        "available_supply": "517321415.0", 
+        "total_supply": "1000000000.0", 
+        "max_supply": null, 
+        "percent_change_1h": "2.49", 
+        "percent_change_24h": "-2.32", 
+        "percent_change_7d": "37.81", 
+        "last_updated": "1512400771"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "stellar", 
         "name": "Stellar Lumens", 
         "symbol": "XLM", 
         "rank": "15", 
+<<<<<<< HEAD
         "price_usd": "0.0929737", 
         "price_btc": "0.00000829", 
         "24h_volume_usd": "37497000.0", 
         "market_cap_usd": "1651481872.0", 
+=======
+        "price_usd": "0.0911599", 
+        "price_btc": "0.00000799", 
+        "24h_volume_usd": "42622000.0", 
+        "market_cap_usd": "1619263537.0", 
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
         "available_supply": "17762892862.0", 
         "total_supply": "103471840067", 
         "max_supply": null, 
         "percent_change_1h": "1.17", 
+<<<<<<< HEAD
         "percent_change_24h": "-1.91", 
         "percent_change_7d": "73.12", 
         "last_updated": "1512414850"
+=======
+        "percent_change_24h": "-0.9", 
+        "percent_change_7d": "76.66", 
+        "last_updated": "1512400749"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "bitconnect", 
         "name": "BitConnect", 
         "symbol": "BCC", 
         "rank": "16", 
+<<<<<<< HEAD
         "price_usd": "318.997", 
         "price_btc": "0.0284359", 
         "24h_volume_usd": "19228900.0", 
@@ -287,11 +507,25 @@
         "percent_change_24h": "-0.51", 
         "percent_change_7d": "-8.02", 
         "last_updated": "1512414568"
+=======
+        "price_usd": "325.372", 
+        "price_btc": "0.028532", 
+        "24h_volume_usd": "19645300.0", 
+        "market_cap_usd": "1036534913.0", 
+        "available_supply": "3185692.0", 
+        "total_supply": "8392580.0", 
+        "max_supply": "28000000.0", 
+        "percent_change_1h": "0.19", 
+        "percent_change_24h": "-4.08", 
+        "percent_change_7d": "9.52", 
+        "last_updated": "1512400762"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "omisego", 
         "name": "OmiseGO", 
         "symbol": "OMG", 
+<<<<<<< HEAD
         "rank": "18", 
         "price_usd": "9.70179", 
         "price_btc": "0.00086483", 
@@ -304,12 +538,44 @@
         "percent_change_24h": "-1.31", 
         "percent_change_7d": "6.78", 
         "last_updated": "1512414573"
+=======
+        "rank": "17", 
+        "price_usd": "9.7155", 
+        "price_btc": "0.00085196", 
+        "24h_volume_usd": "41063500.0", 
+        "market_cap_usd": "991394412.0", 
+        "available_supply": "102042552.0", 
+        "total_supply": "140245398.0", 
+        "max_supply": null, 
+        "percent_change_1h": "1.19", 
+        "percent_change_24h": "-1.28", 
+        "percent_change_7d": "8.3", 
+        "last_updated": "1512400774"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "lisk", 
         "name": "Lisk", 
         "symbol": "LSK", 
+        "rank": "18", 
+        "price_usd": "8.43677", 
+        "price_btc": "0.00073982", 
+        "24h_volume_usd": "29123300.0", 
+        "market_cap_usd": "975135072.0", 
+        "available_supply": "115581564.0", 
+        "total_supply": "115581564.0", 
+        "max_supply": null, 
+        "percent_change_1h": "1.63", 
+        "percent_change_24h": "3.31", 
+        "percent_change_7d": "8.78", 
+        "last_updated": "1512400756"
+    }, 
+    {
+        "id": "qtum", 
+        "name": "Qtum", 
+        "symbol": "QTUM", 
         "rank": "19", 
+<<<<<<< HEAD
         "price_usd": "8.34169", 
         "price_btc": "0.00074359", 
         "24h_volume_usd": "32041500.0", 
@@ -321,12 +587,26 @@
         "percent_change_24h": "4.45", 
         "percent_change_7d": "6.74", 
         "last_updated": "1512414563"
+=======
+        "price_usd": "13.153", 
+        "price_btc": "0.00115339", 
+        "24h_volume_usd": "104269000.0", 
+        "market_cap_usd": "969327802.0", 
+        "available_supply": "73696328.0", 
+        "total_supply": "100196328.0", 
+        "max_supply": null, 
+        "percent_change_1h": "0.72", 
+        "percent_change_24h": "-3.08", 
+        "percent_change_7d": "-9.95", 
+        "last_updated": "1512400771"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }, 
     {
         "id": "zcash", 
         "name": "Zcash", 
         "symbol": "ZEC", 
         "rank": "20", 
+<<<<<<< HEAD
         "price_usd": "323.915", 
         "price_btc": "0.0288744", 
         "24h_volume_usd": "75485600.0", 
@@ -338,5 +618,18 @@
         "percent_change_24h": "-3.36", 
         "percent_change_7d": "-5.12", 
         "last_updated": "1512414562"
+=======
+        "price_usd": "324.019", 
+        "price_btc": "0.0284134", 
+        "24h_volume_usd": "76922000.0", 
+        "market_cap_usd": "894906051.0", 
+        "available_supply": "2761894.0", 
+        "total_supply": "2761894.0", 
+        "max_supply": null, 
+        "percent_change_1h": "0.63", 
+        "percent_change_24h": "-4.5", 
+        "percent_change_7d": "-4.47", 
+        "last_updated": "1512400763"
+>>>>>>> b3aeadbb7c854638a0ba1c649531631999b52135
     }
 ]
