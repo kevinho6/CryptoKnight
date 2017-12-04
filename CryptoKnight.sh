@@ -2,15 +2,14 @@
 
 # Remove the auto-login
 
-# IMPORT INTO THE STORM SERVER AND TEST THE TEXTING FUNCTIONALITY (DONE- AMY)
-
 # Make the boxes for the cryptos smaller
+
 # Should include the price that the user bought each crypto at and also percentage change from bought and market price
+
 # What happens when you own a crypto and it's not in the top 10 anymore? SOLUTION: Make an if statement and then wget for that ticker and pull that information seperately
 # Change from top 10 to top 100 cryptocurrencies
 
 # Bug & Error Checking
-	# Make sure that all the data files are in folders
 
 # CryptoKnight
 # Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
@@ -557,7 +556,7 @@ login()
 				#echo "Enter Password: "
 				#read Password
 
-				Password="ilovedennis" # BYPASS LOGIN FOR NOW
+				Password="ilovecrypto" # BYPASS LOGIN FOR NOW
 
 				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
 
@@ -618,8 +617,13 @@ leader_board()
 	touch -f all_user_holding
 	board_users=`cat users.txt | awk -F, '{printf "%s\n",$1}'`
 
+	tempUsername=$Username
+
 	for user_i in `echo $board_users`
 	do
+
+		Username=$user_i
+
 		if [ -f ./Transactions/$user_i.tran ] && [ `cat ./Transactions/$user_i.tran | wc -l` -gt 0 ]
 		then 
 			create_profile ./Transactions/$user_i.tran
@@ -636,6 +640,8 @@ leader_board()
 			printf "%-12s %-20s\n" "$user_i" "$value_cash_float" >> all_user_holding 
 		fi
 	done
+
+	Username=$tempUsername
 
 	tput setab 9
     tput setaf 0
