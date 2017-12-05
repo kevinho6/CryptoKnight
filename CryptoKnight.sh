@@ -249,7 +249,7 @@ buy() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOCURRENCY_TRANSACTION $send_to
 		fi
 	fi
 }
@@ -315,7 +315,7 @@ sell() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOS_CURRENCY_TRANSCATION $send_to
+			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOCURRENCY_TRANSACTION $send_to
 		fi
 		view_profile $Username
 	fi
@@ -772,12 +772,12 @@ cryptoGenie()
 			status="Hold"
 		fi
 
-		echo "$algorithmTicker,$status" >> algoResults.txt
+		echo "$index,$algorithmTicker,$status" >> algoResults.txt
 
 		index=$((index+1))
 	done
 
-	cat algoResults.txt | awk -F, '{ printf "%6s - %4s\n", $1, $2 }'
+	cat algoResults.txt | awk -F, '{ printf " %4-s %8-s %4s\n", $1, $2, $3 }'
 	rm algoResults.txt
 }
 
