@@ -12,13 +12,14 @@
 # Bug & Error Checking
 
 # CryptoKnight
-# Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
+# Kevin Ho, Amy Feng
 
 tput setab 0
 tput setaf 7
 clear
 
 numOfStocks=100;
+stocksPerPage=20;
 
 startingAmount=100000
 
@@ -61,7 +62,6 @@ topCryptosData() {
 	clear
 	getAPIData	
 	cleanAPIData
-	stocksPerPage=20;
 
 	IFS=$"{"
 
@@ -529,10 +529,14 @@ login()
 			then
 				while [ $is_match = true ]
 				do
+					stty -echo
 					echo "Enter Password: "
 					read Password
+					stty echo
 					echo "Confirm Password: "
+					stty -echo
 					read ConfirmPassword
+					stty echo
 
 					if [ $Password != $ConfirmPassword ]
 					then
@@ -580,7 +584,9 @@ login()
 			while [ $count -le 4 ] && [ $is_match = false ]
 			do
 				echo "Enter Password: "
+				stty -echo
 				read Password
+				stty echo
 
 				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
 
@@ -693,6 +699,8 @@ cryptoGenie()
 	clear
 	getAPIData	
 	cleanAPIData
+	move_row=5;
+	move_column=1;
 	echo "Welcome to CryptoGenie, your cryptocurrency investment advisor"
 	echo
 
@@ -772,13 +780,34 @@ cryptoGenie()
 			status="Hold"
 		fi
 
-		echo "$index,$algorithmTicker,$status" >> algoResults.txt
+		tput cup $move_row $move_column
+
+		tput setaf 0
+		if [ "$status" = "Sell" ]
+        then
+           tput setab 1;
+        elif [ "$status" = "Hold" ]
+        then
+            tput setab 3;
+        else
+            tput setab 2;
+        fi
+
+		printf " %4s %8s %4s \n" $index $algorithmTicker $status
+
+		if [ $(($index % $stocksPerPage)) -eq 0 ]
+		then
+			move_column=$((move_column+40))
+			move_row=4
+
+		fi
 
 		index=$((index+1))
+		move_row=$((move_row+1))
 	done
 
-	cat algoResults.txt | awk -F, '{ printf " %4-s %8-s %4s\n", $1, $2, $3 }'
-	rm algoResults.txt
+	tput setab 0
+    tput setaf 7
 }
 
 news()
