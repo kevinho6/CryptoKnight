@@ -512,10 +512,8 @@ c_sum_trans()
 login()
 {	if [ -f users.txt ]
 	then
-		#echo "Enter Username: "
-		#read Username
-
-		Username="kevinho" # BYPASS LOGIN FOR NOW
+		echo "Enter Username: "
+		read Username
 
 		is_user=`cat users.txt | awk -F, '{printf "%s\n",$1}' | grep -w $Username | wc -l`
 
@@ -581,10 +579,8 @@ login()
 
 			while [ $count -le 4 ] && [ $is_match = false ]
 			do
-				#echo "Enter Password: "
-				#read Password
-
-				Password="ilovecrypto" # BYPASS LOGIN FOR NOW
+				echo "Enter Password: "
+				read Password
 
 				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
 
