@@ -18,7 +18,7 @@ tput setab 0
 tput setaf 7
 clear
 
-numOfStocks=20;
+numOfStocks=100;
 
 startingAmount=100000
 
@@ -61,7 +61,7 @@ topCryptosData() {
 	clear
 	getAPIData	
 	cleanAPIData
-	stocksPerPage=10;
+	stocksPerPage=20;
 
 	IFS=$"{"
 
