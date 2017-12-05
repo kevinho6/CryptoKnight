@@ -344,8 +344,7 @@ sum_trans()
 			do
 				type_tran=`echo $trans | awk -F, '{printf "%s",$1}'`
 				volume=`echo $trans | awk -F, '{printf "%d",$4}'`
-				current_price=`cat amysCleanFile.txt | grep $currency | awk -F, '{printf "%f",$2}'`
-
+				current_price=`cat amysCleanFile.txt | grep -w $currency | awk -F, '{printf "%f",$2}'`
 				if [ $type_tran = "S" ]
 				then
 					sum=$(($sum-$volume))
@@ -353,7 +352,6 @@ sum_trans()
 					sum=$(($sum+$volume))
 				fi	
 			done
-			
 			market_value=$(echo "$sum * $current_price" | bc)
 			total_value=$(echo "$total_value + $market_value" | bc)
 
@@ -362,6 +360,8 @@ sum_trans()
 				printf "%-16s %-20s %.2f %-20s\n" "$sum" "$currency" "$market_value"
 				echo "$currency,$sum" >> ./Stocks/$Username.stocks
 			fi
+
+			
 
 		done
 
@@ -476,7 +476,7 @@ c_sum_trans()
 			do
 				type_tran=`echo $trans | awk -F, '{printf "%s",$1}'`
 				volume=`echo $trans | awk -F, '{printf "%d",$4}'`
-				current_price=`cat amysCleanFile.txt | grep $currency | awk -F, '{printf "%f",$2}'`
+				current_price=`cat amysCleanFile.txt | grep -w $currency | awk -F, '{printf "%f",$2}'`
 
 				if [ $type_tran = "S" ]
 				then
