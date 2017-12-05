@@ -529,10 +529,14 @@ login()
 			then
 				while [ $is_match = true ]
 				do
+					stty -echo
 					echo "Enter Password: "
 					read Password
+					stty echo
 					echo "Confirm Password: "
+					stty -echo
 					read ConfirmPassword
+					stty echo
 
 					if [ $Password != $ConfirmPassword ]
 					then
@@ -580,7 +584,9 @@ login()
 			while [ $count -le 4 ] && [ $is_match = false ]
 			do
 				echo "Enter Password: "
+				stty -echo
 				read Password
+				stty echo
 
 				is_password=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$2}' | grep -w $Password | wc -l`
 
