@@ -12,7 +12,7 @@
 # Bug & Error Checking
 
 # CryptoKnight
-# Kevin Ho, Amy Feng, Arnold Ballesteros, Dennis Hong
+# Kevin Ho, Amy Feng
 
 tput setab 0
 tput setaf 7
