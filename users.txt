@@ -1,4 +1,4 @@
-kevinho,ilovecrypto,6463067863,A
-amyfeng,ilovecrypto,6463067863,A
-Nick,ilovecrypto,6463211111,V
+kevinho,ilovecrypto,6463067863,A,kho9@fordham.edu,yes,Both
+amyfeng,ilovecrypto,6463067863,A,kho9@fordham.edu,yes,Both
+Nick,ilovecrypto,6463211111,V,kho9@fordham.edu,yes,Both
 
