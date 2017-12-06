@@ -1,9 +1,3 @@
-# CHANGES TO BE IMPLEMENTED
-
-# Remove the auto-login
-
-# Make the boxes for the cryptos smaller
-
 # Should include the price that the user bought each crypto at and also percentage change from bought and market price
 
 # What happens when you own a crypto and it's not in the top 10 anymore? SOLUTION: Make an if statement and then wget for that ticker and pull that information seperately
@@ -249,7 +243,7 @@ buy() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s CRYPTOCURRENCY_TRANSACTION $send_to
+			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
 		fi
 	fi
 }
@@ -315,7 +309,7 @@ sell() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s CRYPTOCURRENCY_TRANSACTION $send_to
+			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
 		fi
 		view_profile $Username
 	fi
@@ -829,7 +823,7 @@ visualize()
 cat coin_art.txt
 echo
 echo
-echo "     Welcome to the Cryptocurrency Trading Simulator"
+echo "     Welcome to CryptoKnight - The Cryptocurrency Trading Simulator"
 echo
 
 userInput=1
