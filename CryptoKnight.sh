@@ -1,10 +1,3 @@
-# Should include the price that the user bought each crypto at and also percentage change from bought and market price
-
-# What happens when you own a crypto and it's not in the top 10 anymore? SOLUTION: Make an if statement and then wget for that ticker and pull that information seperately
-# Change from top 10 to top 100 cryptocurrencies
-
-# Bug & Error Checking
-
 # CryptoKnight
 # Kevin Ho, Amy Feng
 
