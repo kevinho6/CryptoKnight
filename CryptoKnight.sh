@@ -1,5 +1,6 @@
 # CryptoKnight
 # Kevin Ho, Amy Feng
+# UNIX with Professor Kounavelis
 
 tput setab 0
 tput setaf 7
@@ -236,7 +237,7 @@ buy() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Buy,Ticker: $cryptoTicker,Price Brought: $buyMarketPrice,Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice,Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
+			echo "Buy, Ticker: $cryptoTicker, Price Brought: $buyMarketPrice, Quantity Buy: $quantityToBuy, Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
 		fi
 	fi
 }
@@ -302,7 +303,7 @@ sell() {
 		want_alerts=`cat users.txt | grep $Username | awk -F, '{printf "%s\n",$6}'`
 		if [ "$want_alerts" == "yes" ]
 		then
-			echo "Sell,Ticker: $cryptoTicker,Price Sold: $sellMarketPrice,Quantity Sold: $quantityToSell,Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
+			echo "Sell, Ticker: $cryptoTicker, Price Sold: $sellMarketPrice, Quantity Sold: $quantityToSell, Total Market Price: $totalMarketPrice, Available Cash: $availableCash" | mailx -s "CryptoKnight Transaction" $send_to
 		fi
 		view_profile $Username
 	fi
