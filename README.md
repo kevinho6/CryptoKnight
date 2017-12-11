@@ -13,3 +13,5 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 - [X] Users can receive algorithmic market advice
 - [X] Users can view cryptocurrency market news
 - [X] Users can view the rankings of everyone using the program
+
+![Alt text](/relative/path/to/img.jpg?raw=true "Optional Title")
