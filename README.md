@@ -15,3 +15,13 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 - [X] Users can view the rankings of everyone using the program
 
 ![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot1.png)
+
+![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot2.png)
+
+![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot3.png)
+
+![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot4.png)
+
+![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot5.png)
+
+![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot6.png)
