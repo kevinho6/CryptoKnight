@@ -14,6 +14,8 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 - [X] Users can view cryptocurrency market news
 - [X] Users can view the rankings of everyone using the program
 
+## Screenshots
+
 ![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot1.png)
 
 ![Alt text](https://github.com/bornarkun/CryptoKnight/blob/master/Screenshots/ScreenShot2.png)
