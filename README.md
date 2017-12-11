@@ -9,7 +9,7 @@ Cryptocurrencies are a relatively new technology that not enough people know abo
 - [X] Users can view the market data of the top 100 cryptocurrencies
 - [X] Users can view their portfolio
 - [X] Users can buy and sell cryptocurrencies
-- [X] Users can receive custom text alerts regarding their holdings
+- [X] Users can receive text and email alerts regarding their transactions
 - [X] Users can receive algorithmic market advice
 - [X] Users can view cryptocurrency market news
 - [X] Users can view the rankings of everyone using the program
